@@ -16,9 +16,9 @@ MonoBehaviour:
   bulletSprite: {fileID: -2413806693520163455, guid: e1b8c94385f963b44b259171dab8701a, type: 3}
   bulletColor: {r: 1, g: 1, b: 1, a: 1}
   bulletCount: 1
-  fireInterval: 0.1
-  duration: 0.3
-  angleRange: 360
+  fireInterval: 0.05
+  duration: 0.15
+  angleRange: 0
   groupRotateAngle: 0
   phases:
   - strategy: {fileID: 11400000, guid: 758ae28b434122d4a99d2aeff21b6226, type: 2}

@@ -10,7 +10,7 @@ public class PlayerManager : MonoBehaviourPunCallbacks, IPunObservable, IDamagab
 
     [Header("Combat")]
     [SerializeField] private BulletShooter bulletShooter; 
-    [SerializeField] private BulletPaternSO currentPattern; 
+    [SerializeField] private BulletPatternSO currentPattern; 
     [SerializeField] private Transform firePoint; 
 
     public static GameObject LocalPlayerInstance;
@@ -64,24 +64,26 @@ public class PlayerManager : MonoBehaviourPunCallbacks, IPunObservable, IDamagab
             transform.localScale = new Vector3(-1, 1, 1);
     }
 
-    public void TryAttack(bool isAttacking)
+    public void TryAttack(bool isAttacking, Vector2 screenPos)
     {
         isFiring = isAttacking;
 
         if (isFiring && photonView.IsMine)
         {
-            FireBullet();
+            Vector2 worldPos = Camera.main.ScreenToWorldPoint(screenPos);
+
+            FireBullet(worldPos);
         }
     }
 
-    private void FireBullet()
+    private void FireBullet(Vector2 targetPos)
     {
         if (bulletShooter == null || currentPattern == null) return;
 
-        Vector2 fireDirection = transform.localScale.x > 0 ? Vector2.right : Vector2.left;
+        Vector2 fireDirection = (targetPos - (Vector2)transform.position).normalized;
 
         Vector2 firePosition = firePoint != null ? firePoint.position : transform.position;
-
+        Debug.DrawRay(transform.position, fireDirection * 5f, Color.red, 1f);
         bulletShooter.PlayPattern(currentPattern, firePosition, fireDirection, BulletType.PlayerBullet);
     }
 

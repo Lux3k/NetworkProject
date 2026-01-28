@@ -3,7 +3,7 @@ using UnityEngine;
 public class BulletGroupData
 {
     public int groupID;
-    public BulletPaternSO pattern;
+    public BulletPatternSO pattern;
     public int currentPhaseIndex;
     public float phaseTimer;
     public int bulletCount; 

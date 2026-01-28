@@ -9,7 +9,7 @@ public class BulletManager : MonoBehaviour
     [SerializeField] private int _poolSize = 100;
 
     [Header("Pattern Database")]
-    [SerializeField] private List<BulletPaternSO> patternDatabase;
+    [SerializeField] private List<BulletPatternSO> patternDatabase;
 
     // 총알 풀링
     [SerializeField]private List<Bullet> _allActiveBullets = new List<Bullet>(500);
@@ -20,8 +20,7 @@ public class BulletManager : MonoBehaviour
     private int _nextGroupID = 0;
 
     // 패턴 Dictionary
-    private Dictionary<int, BulletPaternSO> _patternDict; 
-    private bool _isInitialized = false; 
+    private Dictionary<int, BulletPatternSO> _patternDict; 
 
     private void Awake()
     {
@@ -30,9 +29,8 @@ public class BulletManager : MonoBehaviour
 
     private void Initialize()
     {
-        if (_isInitialized) return; 
-        //Dictionary 초기화
-        _patternDict = new Dictionary<int, BulletPaternSO>();
+        if ( _patternDict != null) return;
+        _patternDict = new Dictionary<int, BulletPatternSO>();
         if (patternDatabase != null)
         {
             foreach (var pattern in patternDatabase)
@@ -58,7 +56,6 @@ public class BulletManager : MonoBehaviour
             }
         }
 
-        _isInitialized = true;
         Debug.Log("BulletManager Initialized");
     }
 
@@ -115,17 +112,13 @@ public class BulletManager : MonoBehaviour
         for (int i = _allActiveBullets.Count - 1; i >= 0; i--)
         {
             var bullet = _allActiveBullets[i];
-
-            if (!bullet.gameObject.activeSelf)
+            if (bullet.gameObject.activeSelf)
             {
-                // 스왑 제거
-                int lastIndex = _allActiveBullets.Count - 1;
-                _allActiveBullets[i] = _allActiveBullets[lastIndex];
-                _allActiveBullets.RemoveAt(lastIndex);
+                bullet.Move();
             }
             else
             {
-                bullet.Move();
+                _allActiveBullets.RemoveAt(i);
             }
         }
     }
@@ -151,10 +144,10 @@ public class BulletManager : MonoBehaviour
         }
     }
 
-    public BulletPaternSO GetPattern(int patternID)
+    public BulletPatternSO GetPattern(int patternID)
     {
 
-        if (_patternDict == null || !_isInitialized)
+        if (_patternDict == null)
         {
             Initialize();
         }
@@ -163,7 +156,7 @@ public class BulletManager : MonoBehaviour
     }
 
     // 그룹 생성
-    public int CreateGroup(BulletPaternSO pattern)
+    public int CreateGroup(BulletPatternSO pattern)
     {
         int groupID = _nextGroupID++;
 
@@ -187,7 +180,7 @@ public class BulletManager : MonoBehaviour
     {
         Bullet bullet;
 
-        if (_bulletPool.Count > 0)
+        if(_bulletPool.Count > 0)
         {
             bullet = _bulletPool.Pop();
         }
@@ -218,7 +211,6 @@ public class BulletManager : MonoBehaviour
     {
         if (!bullet.gameObject.activeSelf) return;
 
-        // 그룹 카운트 감소
         var group = GetGroupByID(bullet.GroupID);
         if (group != null)
             group.bulletCount--;
@@ -226,6 +218,10 @@ public class BulletManager : MonoBehaviour
         bullet.gameObject.SetActive(false);
         _bulletPool.Push(bullet);
 
+        if (_allActiveBullets.Contains(bullet))
+        {
+            _allActiveBullets.Remove(bullet);
+        }
     }
 
 

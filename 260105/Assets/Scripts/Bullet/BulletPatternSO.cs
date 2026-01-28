@@ -8,7 +8,7 @@ public class BulletPhase
 }
 
 [CreateAssetMenu(fileName = "NewPattern", menuName = "BulletPattern")]
-public class BulletPaternSO : ScriptableObject
+public class BulletPatternSO : ScriptableObject
 {
     [Header("Network")]
     public int patternID; //  네트워크 전송용 ID

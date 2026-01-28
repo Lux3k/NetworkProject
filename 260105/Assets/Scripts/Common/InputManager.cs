@@ -9,7 +9,7 @@ public class PlayerInputController : MonoBehaviour
     private InputAction _moveAction;
     private InputAction _attackAction;
     private PhotonView _photonView;
-
+    private Camera _mainCamera;
     void Awake()
     {
         _manager = GetComponent<PlayerManager>();
@@ -17,8 +17,8 @@ public class PlayerInputController : MonoBehaviour
 
         _moveAction = InputSystem.actions.FindAction("Move");
         _attackAction = InputSystem.actions.FindAction("Fire");
+        _mainCamera = Camera.main;
 
-        Debug.Log($"Awake - _moveAction: {_moveAction != null}, _attackAction: {_attackAction != null}, IsMine: {_photonView.IsMine}");
     }
 
     void OnEnable()
@@ -64,11 +64,13 @@ public class PlayerInputController : MonoBehaviour
 
     void OnAttack(InputAction.CallbackContext context)
     {
-        _manager?.TryAttack(true);
+        Vector2 screenPos = Mouse.current.position.ReadValue();
+        _manager?.TryAttack(true,screenPos);
     }
 
     void OnAttackCancel(InputAction.CallbackContext context)
     {
-        _manager?.TryAttack(false);
+        _manager?.TryAttack(false,Vector2.zero);
     }
+    
 }

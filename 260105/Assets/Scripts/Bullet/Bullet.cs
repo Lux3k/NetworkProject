@@ -52,6 +52,9 @@ public class Bullet : MonoBehaviour
         BulletTransform.position = pos;
         Direction = dir.normalized;
 
+        float angle = Mathf.Atan2(Direction.y, Direction.x) * Mathf.Rad2Deg;
+        BulletTransform.rotation = Quaternion.Euler(0, 0, angle);
+
         // 수명
         _currentLifeTime = LifeTime;
 
@@ -59,7 +62,7 @@ public class Bullet : MonoBehaviour
         GroupID = groupID;
         OwnerPhotonViewID = ownerPhotonViewID;
 
-        // ★ 색상만 적용 (패턴은 저장 안 함)
+        // 색상 적용
         _spriteRenderer.color = bulletColor;
     }
 

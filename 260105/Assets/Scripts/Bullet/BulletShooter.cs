@@ -4,7 +4,7 @@ using Photon.Pun;
 
 public class BulletShooter : MonoBehaviourPunCallbacks
 {
-    public void PlayPattern(BulletPaternSO pattern, Vector2 pos, Vector2 dir, BulletType bulletType)
+    public void PlayPattern(BulletPatternSO pattern, Vector2 pos, Vector2 dir, BulletType bulletType)
     {
         if (pattern == null) return;
 
@@ -19,7 +19,7 @@ public class BulletShooter : MonoBehaviourPunCallbacks
     [PunRPC]
     private void RPC_PlayPattern(int patternID, Vector2 pos, Vector2 dir, int bulletTypeInt)
     {
-        BulletPaternSO pattern = GameManager.Instance.BulletManager.GetPattern(patternID);
+        BulletPatternSO pattern = GameManager.Instance.BulletManager.GetPattern(patternID);
         BulletType bulletType = (BulletType)bulletTypeInt;
         if (pattern == null)
         {
@@ -32,7 +32,7 @@ public class BulletShooter : MonoBehaviourPunCallbacks
         }
     }
 
-    private IEnumerator PatternRoutine(BulletPaternSO pattern, Vector2 pos, Vector2 dir,
+    private IEnumerator PatternRoutine(BulletPatternSO pattern, Vector2 pos, Vector2 dir,
                                       BulletType bulletType, int ownerPhotonViewID)
     {
         // 그룹 생성 
@@ -51,7 +51,7 @@ public class BulletShooter : MonoBehaviourPunCallbacks
         }
     }
 
-    private void SpawnBullet(BulletPaternSO pattern, int groupID, float spinAngle,
+    private void SpawnBullet(BulletPatternSO pattern, int groupID, float spinAngle,
                         Vector2 baseDir, BulletType bulletType, int ownerPhotonViewID)
     {
         float baseAngle = Mathf.Atan2(baseDir.y, baseDir.x) * Mathf.Rad2Deg;
