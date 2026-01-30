@@ -1,0 +1,6 @@
+phaseID,strategyType,startSpeed,maxSpeed,acceleration,curveAngle,duration
+1,Straight,15,20,5,0,999
+2,Straight,12,15,3,0,999
+3,Straight,8,10,0,0,1
+4,Stop,0,0,0,0,0.5
+5,Curve,8,10,0,45,4

@@ -28,18 +28,15 @@ public class BulletShooter : MonoBehaviourPunCallbacks
     {
         BulletType bulletType = (BulletType)bulletTypeInt;
 
-        // 1. 테스트 SO 확인
         if (testPattern != null && testPattern.patternID == patternID)
         {
             StartCoroutine(PatternRoutine(testPattern, pos, dir, bulletType, photonView.ViewID));
             return;
         }
 
-        // 2. CSV에서 로드
         PatternData pattern = DataManager.Instance.GetPattern(patternID);
         if (pattern == null)
         {
-            Debug.LogError($"패턴 ID {patternID}를 찾지 못했습니다.");
             return;
         }
 

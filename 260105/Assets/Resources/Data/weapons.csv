@@ -1,0 +1,4 @@
+weaponID,name,patternID,damage,attackSpeed
+1,마법봉,1001,10,2
+2,산탄총,1002,5,0.8
+3,화염구,1003,20,0.5
