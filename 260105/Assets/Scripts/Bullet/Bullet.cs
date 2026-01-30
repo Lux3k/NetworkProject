@@ -9,18 +9,16 @@ public enum BulletType
 
 public class Bullet : MonoBehaviour
 {
-    // 기본 속성
     public Vector2 Direction { get; set; }
     public float CurrentSpeed { get; set; } = 10f;
     public float LifeTime { get; set; } = 5f;
     public int Damage { get; private set; } = 10;
     public Transform BulletTransform { get; private set; }
 
-    // 그룹 및 소유자
     public int GroupID { get; set; }
     public int OwnerPhotonViewID { get; set; }
+    private IBulletStrategy _moveStrategy;
 
-    [SerializeField ]private BulletMoveStrategyBase _moveStrategy;
 
     private float _currentLifeTime;
     private SpriteRenderer _spriteRenderer;
@@ -69,7 +67,7 @@ public class Bullet : MonoBehaviour
     public void Move()
     {
         if (_moveStrategy != null)
-            _moveStrategy.BulletMovement(this);
+            _moveStrategy.Move(this);
 
         _currentLifeTime -= Time.deltaTime;
         if (_currentLifeTime <= 0)
@@ -78,13 +76,10 @@ public class Bullet : MonoBehaviour
         }
     }
 
-    public void SetStrategy(BulletMoveStrategyBase newStrategy)
+    public void SetStrategy(IBulletStrategy newStrategy)
     {
         _moveStrategy = newStrategy;
-        CurrentSpeed = _moveStrategy.startSpeed;
-
-        // 전략 시작 시 초기화
-        newStrategy.OnStrategyStart(this);
+        newStrategy.OnStart(this);
     }
 
     public void ColorChange(Color bulletColor)

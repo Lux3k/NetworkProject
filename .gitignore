@@ -74,3 +74,7 @@ crashlytics-build.properties
 /[Aa]ssets/[Ss]treamingAssets/aa.meta
 /[Aa]ssets/[Ss]treamingAssets/aa/*
 /260105/Library
+/260105/obj
+/260105
+/260105/obj
+/260105/obj/Debug

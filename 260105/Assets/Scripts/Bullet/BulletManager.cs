@@ -66,7 +66,6 @@ public class BulletManager : MonoBehaviour
         UpdateAllBullets();
     }
 
-    // 그룹 페이즈 업데이트
     private void UpdateGroupPhases()
     {
         float deltaTime = Time.deltaTime;
@@ -75,37 +74,42 @@ public class BulletManager : MonoBehaviour
         {
             var group = _activeGroups[i];
 
-            // 총알 없으면 그룹 제거
             if (group.bulletCount <= 0)
             {
                 RemoveGroupAt(i);
                 continue;
             }
+            int phaseCount;
+            float currentPhaseDuration;
 
-            // 페이즈 없으면 스킵
-            if (group.pattern.phases == null || group.pattern.phases.Length == 0)
-                continue;
+            if (group.pattern != null)
+            {
+                if (group.pattern.phases == null || group.pattern.phases.Length == 0)
+                    continue;
+                phaseCount = group.pattern.phases.Length;
+                currentPhaseDuration = group.pattern.phases[group.currentPhaseIndex].duration;
+            }
+            else
+            {
+                if (group.patternData.phases == null || group.patternData.phases.Count == 0)
+                    continue;
+                phaseCount = group.patternData.phases.Count;
+                currentPhaseDuration = group.patternData.phases[group.currentPhaseIndex].duration;
+            }
 
-            // 페이즈 타이머 업데이트
             group.phaseTimer += deltaTime;
 
-            // 페이즈 전환 체크
-            if (group.currentPhaseIndex < group.pattern.phases.Length - 1)
+            if (group.currentPhaseIndex < phaseCount - 1)
             {
-                var currentPhase = group.pattern.phases[group.currentPhaseIndex];
-
-                if (group.phaseTimer >= currentPhase.duration)
+                if (group.phaseTimer >= currentPhaseDuration)
                 {
                     group.currentPhaseIndex++;
                     group.phaseTimer = 0f;
-
-                    // 해당 그룹의 총알만 전략 변경
                     ChangeGroupStrategy(group);
                 }
             }
         }
     }
-
     //모든 총알을 단일 루프로 처리
     private void UpdateAllBullets()
     {
@@ -122,22 +126,31 @@ public class BulletManager : MonoBehaviour
             }
         }
     }
-
     private void ChangeGroupStrategy(BulletGroupData group)
     {
-        var newStrategy = group.pattern.phases[group.currentPhaseIndex].strategy;
+        IBulletStrategy newStrategy;
+
+        if (group.pattern != null)
+        {
+            newStrategy = group.pattern.phases[group.currentPhaseIndex].strategy;
+        }
+        else
+        {
+            var phase = group.patternData.phases[group.currentPhaseIndex];
+            newStrategy = DataManager.Instance.GetStrategy(phase);
+        }
+
         int groupID = group.groupID;
         int foundCount = 0;
         int expectedCount = group.bulletCount;
+
         for (int i = _allActiveBullets.Count - 1; i >= 0; i--)
         {
             var bullet = _allActiveBullets[i];
-
             if (bullet.GroupID == groupID)
             {
                 bullet.SetStrategy(newStrategy);
                 foundCount++;
-               
                 if (foundCount >= expectedCount)
                     break;
             }
@@ -172,8 +185,22 @@ public class BulletManager : MonoBehaviour
         _activeGroups.Add(groupData);
         return groupID;
     }
+    public int CreateGroup(PatternData pattern)
+    {
+        int groupID = _nextGroupID++;
 
-    // 총알 생성
+        var groupData = new BulletGroupData
+        {
+            groupID = groupID,
+            patternData = pattern,
+            currentPhaseIndex = 0,
+            phaseTimer = 0f,
+            bulletCount = 0
+        };
+
+        _activeGroups.Add(groupData);
+        return groupID;
+    }
     public Bullet GetBullet(Vector2 pos, Vector2 dir, BulletType bulletType,
                        Color bulletColor, int groupID, int ownerPhotonViewID,
                        BulletMoveStrategyBase initialStrategy)
@@ -206,7 +233,32 @@ public class BulletManager : MonoBehaviour
         return bullet;
     }
 
-    // 총알 반납
+    public Bullet GetBullet(Vector2 pos, Vector2 dir, BulletType bulletType,
+                       Color bulletColor, int groupID, int ownerPhotonViewID,
+                       IBulletStrategy initialStrategy)
+    {
+        Bullet bullet;
+
+        if (_bulletPool.Count > 0)
+            bullet = _bulletPool.Pop();
+        else
+            bullet = Instantiate(_bulletPrefab);
+
+        bullet.Initialize(pos, dir, bulletType, bulletColor, groupID, ownerPhotonViewID);
+
+        if (initialStrategy != null)
+            bullet.SetStrategy(initialStrategy);
+
+        bullet.gameObject.SetActive(true);
+        _allActiveBullets.Add(bullet);
+
+        var group = GetGroupByID(groupID);
+        if (group != null)
+            group.bulletCount++;
+
+        return bullet;
+    }
+
     public void ReturnBullet(Bullet bullet)
     {
         if (!bullet.gameObject.activeSelf) return;
