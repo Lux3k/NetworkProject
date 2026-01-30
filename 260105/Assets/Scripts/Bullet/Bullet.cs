@@ -16,7 +16,7 @@ public class Bullet : MonoBehaviour
     public Transform BulletTransform { get; private set; }
 
     public int GroupID { get; set; }
-    public int OwnerPhotonViewID { get; set; }
+    public int _ownerActorNumber { get; set; }
     private IBulletStrategy _moveStrategy;
 
 
@@ -40,27 +40,22 @@ public class Bullet : MonoBehaviour
     public void Initialize(Vector2 pos, Vector2 dir, BulletType bulletType,
                           Color bulletColor, int groupID, int ownerPhotonViewID)
     {
-        // 레이어 설정
         if (bulletType == BulletType.PlayerBullet)
             gameObject.layer = LayerMask.NameToLayer("PlayerBullet");
         else
             gameObject.layer = LayerMask.NameToLayer("EnemyBullet");
 
-        // 위치 및 방향
         BulletTransform.position = pos;
         Direction = dir.normalized;
 
         float angle = Mathf.Atan2(Direction.y, Direction.x) * Mathf.Rad2Deg;
         BulletTransform.rotation = Quaternion.Euler(0, 0, angle);
 
-        // 수명
         _currentLifeTime = LifeTime;
 
-        // 그룹 및 소유자
         GroupID = groupID;
-        OwnerPhotonViewID = ownerPhotonViewID;
+        _ownerActorNumber = ownerPhotonViewID;
 
-        // 색상 적용
         _spriteRenderer.color = bulletColor;
     }
 
@@ -89,20 +84,22 @@ public class Bullet : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        PhotonView targetPV = collision.GetComponent<PhotonView>();
-
-        if (targetPV != null)
-        {
-            if (targetPV.ViewID != OwnerPhotonViewID && !targetPV.IsMine)
-            {
-                targetPV.RPC("TakeDamage", RpcTarget.All, Damage);
-            }
-        }
-        else
+        if (PhotonNetwork.LocalPlayer.ActorNumber == _ownerActorNumber)
         {
             if (collision.TryGetComponent<IDamagable>(out IDamagable damagable))
             {
-                damagable.TakeDamage(Damage);
+                if (collision.TryGetComponent<PhotonView>(out PhotonView targetPV))
+                {
+
+                    if (collision.CompareTag("Enemy"))
+                        targetPV.RPC("TakeDamage", RpcTarget.MasterClient, Damage);
+                    else
+                        targetPV.RPC("TakeDamage", RpcTarget.All, Damage);
+                }
+                else
+                {
+                    damagable.TakeDamage(Damage);
+                }
             }
         }
 

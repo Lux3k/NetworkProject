@@ -9,9 +9,7 @@ public class PlayerManager : MonoBehaviourPunCallbacks, IPunObservable, IDamagab
     [SerializeField] private float moveSpeed = 10f;
 
     [Header("Combat")]
-    [SerializeField] private BulletShooter bulletShooter; 
-    [SerializeField] private BulletPatternSO currentPattern; 
-    [SerializeField] private Transform firePoint; 
+    [SerializeField] private WeaponHolder weaponHolder;
 
     public static GameObject LocalPlayerInstance;
 
@@ -23,8 +21,8 @@ public class PlayerManager : MonoBehaviourPunCallbacks, IPunObservable, IDamagab
         if (photonView.IsMine)
             LocalPlayerInstance = this.gameObject;
 
-        if (bulletShooter == null)
-            bulletShooter = GetComponent<BulletShooter>();
+        if (weaponHolder == null)
+            weaponHolder = GetComponentInChildren<WeaponHolder>();
     }
 
     void Start()
@@ -58,10 +56,16 @@ public class PlayerManager : MonoBehaviourPunCallbacks, IPunObservable, IDamagab
 
         transform.Translate(_moveDirection * moveSpeed * Time.deltaTime);
 
+        Vector3 currentScale = transform.localScale;
+
         if (_moveDirection.x > 0)
-            transform.localScale = new Vector3(1, 1, 1);
+        {
+            transform.localScale = new Vector3(Mathf.Abs(currentScale.x), currentScale.y, currentScale.z);
+        }
         else if (_moveDirection.x < 0)
-            transform.localScale = new Vector3(-1, 1, 1);
+        {
+            transform.localScale = new Vector3(-Mathf.Abs(currentScale.x), currentScale.y, currentScale.z);
+        }
     }
 
     public void TryAttack(bool isAttacking, Vector2 screenPos)
@@ -78,13 +82,10 @@ public class PlayerManager : MonoBehaviourPunCallbacks, IPunObservable, IDamagab
 
     private void FireBullet(Vector2 targetPos)
     {
-        if (bulletShooter == null || currentPattern == null) return;
+        if (weaponHolder == null || weaponHolder.CurrentWeapon == null) return;
 
         Vector2 fireDirection = (targetPos - (Vector2)transform.position).normalized;
-
-        Vector2 firePosition = firePoint != null ? firePoint.position : transform.position;
-        Debug.DrawRay(transform.position, fireDirection * 5f, Color.red, 1f);
-        bulletShooter.PlayPattern(currentPattern, firePosition, fireDirection, BulletType.PlayerBullet);
+        weaponHolder.Fire(fireDirection, BulletType.PlayerBullet);
     }
 
     [PunRPC]
@@ -100,8 +101,7 @@ public class PlayerManager : MonoBehaviourPunCallbacks, IPunObservable, IDamagab
 
         if (Health <= 0f)
         {
-            Debug.Log("»ç¸Á!");
-            // GameManager.Instance.LeaveRoom();
+            Logger.Log("»ç¸Á!");
         }
     }
 

@@ -1,6 +1,6 @@
-phaseID,strategyType,startSpeed,maxSpeed,acceleration,curveAngle,duration
-1,Straight,15,20,5,0,999
-2,Straight,12,15,3,0,999
-3,Straight,8,10,0,0,1
-4,Stop,0,0,0,0,0.5
-5,Curve,8,10,0,45,4
+phaseID,strategyType,startSpeed,maxSpeed,acceleration,duration,param1,param2,param3
+1,Straight,15,20,5,999,0,0,0
+2,Straight,12,15,3,999,0,0,0
+3,Straight,8,10,0,1,0,0,0
+4,Stop,0,0,0,0.5,0,0,0
+5,Curve,8,10,0,4,45,0,0

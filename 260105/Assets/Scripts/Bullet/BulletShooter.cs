@@ -9,20 +9,11 @@ public class BulletShooter : MonoBehaviourPunCallbacks
 
     public void PlayPattern(int patternID, Vector2 pos, Vector2 dir, BulletType bulletType)
     {
-        if (testPattern != null)
-            patternID = testPattern.patternID;
-
         if (photonView != null && photonView.IsMine)
-        {
             photonView.RPC("RPC_PlayPattern", RpcTarget.All,
                 patternID, pos, dir, (int)bulletType);
-        }
     }
-    public void PlayPattern(BulletPatternSO pattern, Vector2 pos, Vector2 dir, BulletType bulletType)
-    {
-        if (pattern == null) return;
-        PlayPattern(pattern.patternID, pos, dir, bulletType);
-    }
+
     [PunRPC]
     private void RPC_PlayPattern(int patternID, Vector2 pos, Vector2 dir, int bulletTypeInt)
     {
@@ -30,38 +21,36 @@ public class BulletShooter : MonoBehaviourPunCallbacks
 
         if (testPattern != null && testPattern.patternID == patternID)
         {
-            StartCoroutine(PatternRoutine(testPattern, pos, dir, bulletType, photonView.ViewID));
+            StartCoroutine(PatternRoutine(testPattern, pos, dir, bulletType, PhotonNetwork.LocalPlayer.ActorNumber));
             return;
         }
 
-        PatternData pattern = DataManager.Instance.GetPattern(patternID);
-        if (pattern == null)
+        PatternData csvPattern = DataManager.Instance.GetPattern(patternID);
+        if (csvPattern != null)
         {
+            StartCoroutine(PatternRoutine(csvPattern, pos, dir, bulletType, PhotonNetwork.LocalPlayer.ActorNumber));
             return;
         }
-
-        StartCoroutine(PatternRoutine(pattern, pos, dir, bulletType, photonView.ViewID));
     }
 
     private IEnumerator PatternRoutine(PatternData pattern, Vector2 pos, Vector2 dir,
-                                      BulletType bulletType, int ownerPhotonViewID)
+                                  BulletType bulletType, int ownerPhotonViewID)
     {
-        int groupID = GameManager.Instance.BulletManager.CreateGroup(pattern);
-
         float currentDuration = 0f;
         float currentSpinAngle = 0f;
 
         while (currentDuration < pattern.duration)
         {
-            SpawnBulleV(pattern, groupID, currentSpinAngle, dir, bulletType, ownerPhotonViewID);
+            // 매 발사마다 그룹 생성
+            int groupID = GameManager.Instance.BulletManager.CreateGroup(pattern);
+            SpawnBullet(pattern, groupID, currentSpinAngle, dir, bulletType, ownerPhotonViewID);
 
             yield return new WaitForSeconds(pattern.fireInterval);
             currentDuration += pattern.fireInterval;
             currentSpinAngle += pattern.groupRotateAngle;
         }
     }
-
-    private void SpawnBulleV(PatternData pattern, int groupID, float spinAngle,
+    private void SpawnBullet(PatternData pattern, int groupID, float spinAngle,
                             Vector2 baseDir, BulletType bulletType, int ownerPhotonViewID)
     {
         float baseAngle = Mathf.Atan2(baseDir.y, baseDir.x) * Mathf.Rad2Deg;
@@ -92,16 +81,14 @@ public class BulletShooter : MonoBehaviourPunCallbacks
     }
 
     private IEnumerator PatternRoutine(BulletPatternSO pattern, Vector2 pos, Vector2 dir,
-                                      BulletType bulletType, int ownerPhotonViewID)
+                                    BulletType bulletType, int ownerPhotonViewID)
     {
-        // 그룹 생성 
-        int groupID = GameManager.Instance.BulletManager.CreateGroup(pattern);
-
         float currentDuration = 0f;
         float currentSpinAngle = 0f;
 
         while (currentDuration < pattern.duration)
         {
+            int groupID = GameManager.Instance.BulletManager.CreateGroup(pattern);
             SpawnBullet(pattern, groupID, currentSpinAngle, dir, bulletType, ownerPhotonViewID);
 
             yield return new WaitForSeconds(pattern.fireInterval);
@@ -109,7 +96,6 @@ public class BulletShooter : MonoBehaviourPunCallbacks
             currentSpinAngle += pattern.groupRotateAngle;
         }
     }
-
     private void SpawnBullet(BulletPatternSO pattern, int groupID, float spinAngle,
                         Vector2 baseDir, BulletType bulletType, int ownerPhotonViewID)
     {
@@ -123,7 +109,6 @@ public class BulletShooter : MonoBehaviourPunCallbacks
         if (pattern.angleRange >= 360f)
             angleStep = pattern.angleRange / pattern.bulletCount;
 
-        // 첫 페이즈 전략 가져오기
         BulletMoveStrategyBase initialStrategy = null;
         if (pattern.phases != null && pattern.phases.Length > 0)
         {

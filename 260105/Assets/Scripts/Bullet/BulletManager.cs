@@ -56,7 +56,7 @@ public class BulletManager : MonoBehaviour
             }
         }
 
-        Debug.Log("BulletManager Initialized");
+        Logger.Log("BulletManager Initialized");
     }
 
     // Manager가 업데이트 처리
