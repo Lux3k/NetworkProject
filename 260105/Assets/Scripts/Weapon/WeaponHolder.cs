@@ -39,7 +39,6 @@ public class WeaponHolder : MonoBehaviour
             newIndex = weapons.Count - 1;
 
         _currentIndex = newIndex;
-        Logger.Log($"무기 변경: {CurrentWeapon.WeaponName}");
 
         CurrentWeapon.gameObject.SetActive(true);
     }

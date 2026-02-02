@@ -42,6 +42,11 @@ MonoBehaviour:
   - RPC_PlayPattern
   - TakeDamage
   - RPC_TakeDamage
+  - RPC_SetMonsterID
+  - RPC_MonsterDied
+  - RPC_SpawnMonster
+  - ExecutePattern
+  - RPC_MonsterDamaged
   DisableAutoOpenWizard: 1
   ShowSettings: 0
   DevRegionSetOnce: 0

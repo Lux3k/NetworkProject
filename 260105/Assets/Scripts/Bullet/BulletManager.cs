@@ -12,12 +12,15 @@ public class BulletManager : MonoBehaviour
     [SerializeField] private List<BulletPatternSO> patternDatabase;
 
     // 총알 풀링
-    [SerializeField]private List<Bullet> _allActiveBullets = new List<Bullet>(500);
-    private Stack<Bullet> _bulletPool = new Stack<Bullet>(100);
+    [SerializeField]private List<Bullet> _allActiveBullets = new List<Bullet>();
+    private Stack<Bullet> _bulletPool = new Stack<Bullet>();
 
     // 그룹 관리
-    private List<BulletGroupData> _activeGroups = new List<BulletGroupData>(50);
+    private List<BulletGroup> _activeGroups = new List<BulletGroup>();
+    private Stack<BulletGroup> _groupPool = new Stack<BulletGroup>();
     private int _nextGroupID = 0;
+
+    private Dictionary<int, BulletGroup> _groupDict = new Dictionary<int, BulletGroup>();
 
     // 패턴 Dictionary
     private Dictionary<int, BulletPatternSO> _patternDict; 
@@ -40,10 +43,12 @@ public class BulletManager : MonoBehaviour
             }
         }
 
-        if (_bulletPool == null)
+        if (_bulletPool.Count == 0)
         {
             _bulletPool = new Stack<Bullet>(_poolSize);
             _allActiveBullets = new List<Bullet>(_poolSize);
+            _groupPool = new Stack<BulletGroup>(_poolSize);
+            _groupDict = new Dictionary<int, BulletGroup>(_poolSize);
 
             for (int i = 0; i < _poolSize; i++)
             {
@@ -56,7 +61,6 @@ public class BulletManager : MonoBehaviour
             }
         }
 
-        Logger.Log("BulletManager Initialized");
     }
 
     // Manager가 업데이트 처리
@@ -68,45 +72,17 @@ public class BulletManager : MonoBehaviour
 
     private void UpdateGroupPhases()
     {
-        float deltaTime = Time.deltaTime;
+        float dt = Time.deltaTime;
 
         for (int i = _activeGroups.Count - 1; i >= 0; i--)
         {
-            var group = _activeGroups[i];
+            BulletGroup group = _activeGroups[i];
 
-            if (group.bulletCount <= 0)
+            group.Update(dt);
+
+            if (group.MyBullets.Count == 0)
             {
                 RemoveGroupAt(i);
-                continue;
-            }
-            int phaseCount;
-            float currentPhaseDuration;
-
-            if (group.pattern != null)
-            {
-                if (group.pattern.phases == null || group.pattern.phases.Length == 0)
-                    continue;
-                phaseCount = group.pattern.phases.Length;
-                currentPhaseDuration = group.pattern.phases[group.currentPhaseIndex].duration;
-            }
-            else
-            {
-                if (group.patternData.phases == null || group.patternData.phases.Count == 0)
-                    continue;
-                phaseCount = group.patternData.phases.Count;
-                currentPhaseDuration = group.patternData.phases[group.currentPhaseIndex].duration;
-            }
-
-            group.phaseTimer += deltaTime;
-
-            if (group.currentPhaseIndex < phaseCount - 1)
-            {
-                if (group.phaseTimer >= currentPhaseDuration)
-                {
-                    group.currentPhaseIndex++;
-                    group.phaseTimer = 0f;
-                    ChangeGroupStrategy(group);
-                }
             }
         }
     }
@@ -115,47 +91,21 @@ public class BulletManager : MonoBehaviour
     {
         for (int i = _allActiveBullets.Count - 1; i >= 0; i--)
         {
-            var bullet = _allActiveBullets[i];
-            if (bullet.gameObject.activeSelf)
+            Bullet bullet = _allActiveBullets[i];
+
+            if (!bullet.gameObject.activeSelf)
             {
-                bullet.Move();
+                _bulletPool.Push(bullet);
+
+                int lastIndex = _allActiveBullets.Count - 1;
+                _allActiveBullets[i] = _allActiveBullets[lastIndex];
+                _allActiveBullets.RemoveAt(lastIndex);
             }
             else
-            {
-                _allActiveBullets.RemoveAt(i);
-            }
+                bullet.Move();
         }
     }
-    private void ChangeGroupStrategy(BulletGroupData group)
-    {
-        IBulletStrategy newStrategy;
-
-        if (group.pattern != null)
-        {
-            newStrategy = group.pattern.phases[group.currentPhaseIndex].strategy;
-        }
-        else
-        {
-            var phase = group.patternData.phases[group.currentPhaseIndex];
-            newStrategy = DataManager.Instance.GetStrategy(phase);
-        }
-
-        int groupID = group.groupID;
-        int foundCount = 0;
-        int expectedCount = group.bulletCount;
-
-        for (int i = _allActiveBullets.Count - 1; i >= 0; i--)
-        {
-            var bullet = _allActiveBullets[i];
-            if (bullet.GroupID == groupID)
-            {
-                bullet.SetStrategy(newStrategy);
-                foundCount++;
-                if (foundCount >= expectedCount)
-                    break;
-            }
-        }
-    }
+    
 
     public BulletPatternSO GetPattern(int patternID)
     {
@@ -168,74 +118,71 @@ public class BulletManager : MonoBehaviour
         return _patternDict[patternID];
     }
 
+
     // 그룹 생성
     public int CreateGroup(BulletPatternSO pattern)
     {
         int groupID = _nextGroupID++;
+        BulletGroup group = GetGroupFromPool();
 
-        var groupData = new BulletGroupData
-        {
-            groupID = groupID,
-            pattern = pattern,
-            currentPhaseIndex = 0,
-            phaseTimer = 0f,
-            bulletCount = 0
-        };
+        group.Initialize(groupID, pattern); 
 
-        _activeGroups.Add(groupData);
+        _activeGroups.Add(group);
+        _groupDict.Add(groupID, group);
         return groupID;
     }
     public int CreateGroup(PatternData pattern)
     {
         int groupID = _nextGroupID++;
+        BulletGroup group = GetGroupFromPool(); 
 
-        var groupData = new BulletGroupData
-        {
-            groupID = groupID,
-            patternData = pattern,
-            currentPhaseIndex = 0,
-            phaseTimer = 0f,
-            bulletCount = 0
-        };
+        group.Initialize(groupID, pattern); 
 
-        _activeGroups.Add(groupData);
+        _activeGroups.Add(group);
+        _groupDict.Add(groupID, group);
         return groupID;
     }
-    public Bullet GetBullet(Vector2 pos, Vector2 dir, BulletType bulletType,
-                       Color bulletColor, int groupID, int ownerPhotonViewID,
-                       BulletMoveStrategyBase initialStrategy)
+    private BulletGroup GetGroupFromPool()
     {
-        Bullet bullet;
-
-        if(_bulletPool.Count > 0)
-        {
-            bullet = _bulletPool.Pop();
-        }
-        else
-        {
-            bullet = Instantiate(_bulletPrefab);
-        }
-
-        bullet.Initialize(pos, dir, bulletType, bulletColor, groupID, ownerPhotonViewID);
-
-        if (initialStrategy != null)
-        {
-            bullet.SetStrategy(initialStrategy);
-        }
-
-        bullet.gameObject.SetActive(true);
-        _allActiveBullets.Add(bullet);
-
-        var group = GetGroupByID(groupID);
-        if (group != null)
-            group.bulletCount++;
-
-        return bullet;
+        if (_groupPool.Count > 0) 
+            return _groupPool.Pop();
+        return new BulletGroup();
     }
+    //public Bullet GetBullet(Vector2 pos, Vector2 dir, BulletType bulletType,
+    //                   Color bulletColor, int groupID, int ownerID,
+    //                   BulletMoveStrategyBase initialStrategy)
+    //{
+    //    Bullet bullet;
+
+    //    if(_bulletPool.Count > 0)
+    //    {
+    //        bullet = _bulletPool.Pop();
+    //    }
+    //    else
+    //    {
+    //        bullet = Instantiate(_bulletPrefab);
+    //    }
+
+    //    bullet.Initialize(pos, dir, bulletType, bulletColor, groupID, ownerID);
+
+    //    if (initialStrategy != null)
+    //    {
+    //        bullet.SetStrategy(initialStrategy);
+    //    }
+
+    //    bullet.gameObject.SetActive(true);
+    //    _allActiveBullets.Add(bullet);
+
+    //    var group = GetGroupByID(groupID);
+    //    if (group != null)
+    //        group.bulletCount++;
+
+    //    return bullet;
+    //}
 
     public Bullet GetBullet(Vector2 pos, Vector2 dir, BulletType bulletType,
-                       Color bulletColor, int groupID, int ownerPhotonViewID,
-                       IBulletStrategy initialStrategy)
+                        Color bulletColor, int groupID, int ownerID,
+                        IBulletStrategy initialStrategy)
     {
         Bullet bullet;
 
@@ -244,7 +191,7 @@ public class BulletManager : MonoBehaviour
         else
             bullet = Instantiate(_bulletPrefab);
 
-        bullet.Initialize(pos, dir, bulletType, bulletColor, groupID, ownerPhotonViewID);
+        bullet.Initialize(pos, dir, bulletType, bulletColor, groupID, ownerID);
 
         if (initialStrategy != null)
             bullet.SetStrategy(initialStrategy);
@@ -252,38 +199,30 @@ public class BulletManager : MonoBehaviour
         bullet.gameObject.SetActive(true);
         _allActiveBullets.Add(bullet);
 
-        var group = GetGroupByID(groupID);
-        if (group != null)
-            group.bulletCount++;
+        if (_groupDict.TryGetValue(groupID, out var group))
+        {
+            group.AddBullet(bullet);
+        }
 
         return bullet;
     }
 
-    public void ReturnBullet(Bullet bullet)
+
+    private BulletGroup GetGroupByID(int groupID)
     {
-        if (!bullet.gameObject.activeSelf) return;
-
-        var group = GetGroupByID(bullet.GroupID);
-        if (group != null)
-            group.bulletCount--;
-
-        bullet.gameObject.SetActive(false);
-        _bulletPool.Push(bullet);
-
-        if (_allActiveBullets.Contains(bullet))
-        {
-            _allActiveBullets.Remove(bullet);
-        }
-    }
-
-
-    private BulletGroupData GetGroupByID(int groupID)
-    {
-        return _activeGroups.Find(g => g.groupID == groupID);
+        if (_groupDict.TryGetValue(groupID, out var group)) 
+            return group;
+        return null;
     }
 
     private void RemoveGroupAt(int index)
     {
+        BulletGroup group = _activeGroups[index];
+
+        _groupDict.Remove(group.GroupID); 
+        group.Reset(); 
+        _groupPool.Push(group); 
+
         int lastIndex = _activeGroups.Count - 1;
         _activeGroups[index] = _activeGroups[lastIndex];
         _activeGroups.RemoveAt(lastIndex);

@@ -9,41 +9,37 @@ public enum BulletType
 
 public class Bullet : MonoBehaviour
 {
+    public const int NO_GROUP_ID = -1;
     public Vector2 Direction { get; set; }
     public float CurrentSpeed { get; set; } = 10f;
     public float LifeTime { get; set; } = 5f;
     public int Damage { get; private set; } = 10;
     public Transform BulletTransform { get; private set; }
 
-    public int GroupID { get; set; }
+    public int GroupID { get; set; } = NO_GROUP_ID;
     public int _ownerActorNumber { get; set; }
     private IBulletStrategy _moveStrategy;
 
 
     private float _currentLifeTime;
     private SpriteRenderer _spriteRenderer;
-    private Rigidbody2D _rb;
+    private float _radius;
+    private int _targetLayer;
 
     private void Awake()
     {
         BulletTransform = transform;
         _spriteRenderer = GetComponent<SpriteRenderer>();
-        _rb = GetComponent<Rigidbody2D>();
-
-        if (_rb != null)
-        {
-            _rb.bodyType = RigidbodyType2D.Kinematic;
-            _rb.gravityScale = 0f;
-        }
+        _radius = _spriteRenderer.bounds.extents.x;
     }
 
     public void Initialize(Vector2 pos, Vector2 dir, BulletType bulletType,
-                          Color bulletColor, int groupID, int ownerPhotonViewID)
+                          Color bulletColor, int groupID, int ownerID)
     {
         if (bulletType == BulletType.PlayerBullet)
-            gameObject.layer = LayerMask.NameToLayer("PlayerBullet");
+            _targetLayer = LayerMask.GetMask("Enemy");
         else
-            gameObject.layer = LayerMask.NameToLayer("EnemyBullet");
+            _targetLayer = LayerMask.GetMask("Player");
 
         BulletTransform.position = pos;
         Direction = dir.normalized;
@@ -52,25 +48,55 @@ public class Bullet : MonoBehaviour
         BulletTransform.rotation = Quaternion.Euler(0, 0, angle);
 
         _currentLifeTime = LifeTime;
-
         GroupID = groupID;
-        _ownerActorNumber = ownerPhotonViewID;
-
+        _ownerActorNumber = ownerID;
         _spriteRenderer.color = bulletColor;
     }
-
+    public void ResetGroupID()
+    {
+        GroupID = NO_GROUP_ID;
+    }
     public void Move()
     {
         if (_moveStrategy != null)
             _moveStrategy.Move(this);
 
+
+        Collider2D hit = Physics2D.OverlapCircle(
+            BulletTransform.position,
+            _radius,
+            _targetLayer);
+
+        if (hit != null)
+            HandleHit(hit);
+
         _currentLifeTime -= Time.deltaTime;
         if (_currentLifeTime <= 0)
-        {
-            PoolReturn();
-        }
+            SetDeactivate();
     }
 
+  
+    private void HandleHit(Collider2D collision)
+    {
+
+        if (PhotonNetwork.LocalPlayer.ActorNumber == _ownerActorNumber)
+        {
+
+            if (collision.TryGetComponent<IDamagable>(out IDamagable damagable))
+            {
+                if (collision.TryGetComponent<PhotonView>(out PhotonView targetPV))
+                {
+                    targetPV.RPC("TakeDamage", RpcTarget.All, Damage);
+                }
+                else
+                {
+                    damagable.TakeDamage(Damage);
+                }
+            }
+        }
+
+        SetDeactivate();
+    }
     public void SetStrategy(IBulletStrategy newStrategy)
     {
         _moveStrategy = newStrategy;
@@ -82,32 +108,10 @@ public class Bullet : MonoBehaviour
         _spriteRenderer.color = bulletColor;
     }
 
-    private void OnTriggerEnter2D(Collider2D collision)
+    private void SetDeactivate()
     {
-        if (PhotonNetwork.LocalPlayer.ActorNumber == _ownerActorNumber)
-        {
-            if (collision.TryGetComponent<IDamagable>(out IDamagable damagable))
-            {
-                if (collision.TryGetComponent<PhotonView>(out PhotonView targetPV))
-                {
-
-                    if (collision.CompareTag("Enemy"))
-                        targetPV.RPC("TakeDamage", RpcTarget.MasterClient, Damage);
-                    else
-                        targetPV.RPC("TakeDamage", RpcTarget.All, Damage);
-                }
-                else
-                {
-                    damagable.TakeDamage(Damage);
-                }
-            }
-        }
-
-        PoolReturn();
-    }
-
-    private void PoolReturn()
-    {
-        GameManager.Instance.BulletManager.ReturnBullet(this);
+        if (!gameObject.activeSelf) 
+            return;
+        gameObject.SetActive(false);
     }
 }

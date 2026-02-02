@@ -10,12 +10,16 @@ public class BulletShooter : MonoBehaviourPunCallbacks
     public void PlayPattern(int patternID, Vector2 pos, Vector2 dir, BulletType bulletType)
     {
         if (photonView != null && photonView.IsMine)
-            photonView.RPC("RPC_PlayPattern", RpcTarget.All,
+            photonView.RPC("ExecutePattern", RpcTarget.All,
                 patternID, pos, dir, (int)bulletType);
+    }
+    public void PlayPatternLocal(int patternID, Vector2 pos, Vector2 dir, BulletType bulletType)
+    {
+        ExecutePattern(patternID, pos, dir, (int)bulletType);
     }
 
     [PunRPC]
-    private void RPC_PlayPattern(int patternID, Vector2 pos, Vector2 dir, int bulletTypeInt)
+    private void ExecutePattern(int patternID, Vector2 pos, Vector2 dir, int bulletTypeInt)
     {
         BulletType bulletType = (BulletType)bulletTypeInt;
 
@@ -34,7 +38,7 @@ public class BulletShooter : MonoBehaviourPunCallbacks
     }
 
     private IEnumerator PatternRoutine(PatternData pattern, Vector2 pos, Vector2 dir,
-                                  BulletType bulletType, int ownerPhotonViewID)
+                                  BulletType bulletType, int ownerID)
     {
         float currentDuration = 0f;
         float currentSpinAngle = 0f;
@@ -43,7 +47,7 @@ public class BulletShooter : MonoBehaviourPunCallbacks
         {
             // 매 발사마다 그룹 생성
             int groupID = GameManager.Instance.BulletManager.CreateGroup(pattern);
-            SpawnBullet(pattern, groupID, currentSpinAngle, dir, bulletType, ownerPhotonViewID);
+            SpawnBullet(pattern, groupID, currentSpinAngle, dir, bulletType, ownerID);
 
             yield return new WaitForSeconds(pattern.fireInterval);
             currentDuration += pattern.fireInterval;
@@ -51,7 +55,7 @@ public class BulletShooter : MonoBehaviourPunCallbacks
         }
     }
     private void SpawnBullet(PatternData pattern, int groupID, float spinAngle,
-                            Vector2 baseDir, BulletType bulletType, int ownerPhotonViewID)
+                            Vector2 baseDir, BulletType bulletType, int ownerID)
     {
         float baseAngle = Mathf.Atan2(baseDir.y, baseDir.x) * Mathf.Rad2Deg;
         float startAngle = baseAngle - (pattern.angleRange / 2f) + spinAngle;
@@ -76,12 +80,12 @@ public class BulletShooter : MonoBehaviourPunCallbacks
 
             GameManager.Instance.BulletManager.GetBullet(
                 transform.position, dir, bulletType,
-                pattern.bulletColor, groupID, ownerPhotonViewID,initialStrategy);
+                pattern.bulletColor, groupID, ownerID,initialStrategy);
         }
     }
 
     private IEnumerator PatternRoutine(BulletPatternSO pattern, Vector2 pos, Vector2 dir,
-                                    BulletType bulletType, int ownerPhotonViewID)
+                                    BulletType bulletType, int ownerID)
     {
         float currentDuration = 0f;
         float currentSpinAngle = 0f;
@@ -89,7 +93,7 @@ public class BulletShooter : MonoBehaviourPunCallbacks
         while (currentDuration < pattern.duration)
         {
             int groupID = GameManager.Instance.BulletManager.CreateGroup(pattern);
-            SpawnBullet(pattern, groupID, currentSpinAngle, dir, bulletType, ownerPhotonViewID);
+            SpawnBullet(pattern, groupID, currentSpinAngle, dir, bulletType, ownerID);
 
             yield return new WaitForSeconds(pattern.fireInterval);
             currentDuration += pattern.fireInterval;
@@ -97,7 +101,7 @@ public class BulletShooter : MonoBehaviourPunCallbacks
         }
     }
     private void SpawnBullet(BulletPatternSO pattern, int groupID, float spinAngle,
-                        Vector2 baseDir, BulletType bulletType, int ownerPhotonViewID)
+                        Vector2 baseDir, BulletType bulletType, int ownerID)
     {
         float baseAngle = Mathf.Atan2(baseDir.y, baseDir.x) * Mathf.Rad2Deg;
         float startAngle = baseAngle - (pattern.angleRange / 2f) + spinAngle;
@@ -127,7 +131,7 @@ public class BulletShooter : MonoBehaviourPunCallbacks
                 bulletType,
                 pattern.bulletColor,  
                 groupID,
-                ownerPhotonViewID,
+                ownerID,
                 initialStrategy);     
         }
     }

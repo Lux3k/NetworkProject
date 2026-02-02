@@ -13,7 +13,6 @@ public class PlayerManager : MonoBehaviourPunCallbacks, IPunObservable, IDamagab
 
     public static GameObject LocalPlayerInstance;
 
-    private bool isFiring;
     private Vector2 _moveDirection;
 
     void Awake()
@@ -70,9 +69,8 @@ public class PlayerManager : MonoBehaviourPunCallbacks, IPunObservable, IDamagab
 
     public void TryAttack(bool isAttacking, Vector2 screenPos)
     {
-        isFiring = isAttacking;
 
-        if (isFiring && photonView.IsMine)
+        if (photonView.IsMine)
         {
             Vector2 worldPos = Camera.main.ScreenToWorldPoint(screenPos);
 
@@ -109,12 +107,10 @@ public class PlayerManager : MonoBehaviourPunCallbacks, IPunObservable, IDamagab
     {
         if (stream.IsWriting)
         {
-            stream.SendNext(isFiring);
             stream.SendNext(Health);
         }
         else
         {
-            this.isFiring = (bool)stream.ReceiveNext();
             this.Health = (int)stream.ReceiveNext();
         }
     }

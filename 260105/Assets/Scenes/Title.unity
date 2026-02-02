@@ -355,6 +355,10 @@ PrefabInstance:
       value: https://docs.google.com/spreadsheets/d/14bb5PbXD9XaTUY9Osye4T6bYEXRoNvWRdImyaICrq5Q/export?format=csv&gid=962659118
       objectReference: {fileID: 0}
     - target: {fileID: 8762935971543057847, guid: ab31e374518613348a364fa88bdcb38d, type: 3}
+      propertyPath: monsterSheetURL
+      value: https://docs.google.com/spreadsheets/d/14bb5PbXD9XaTUY9Osye4T6bYEXRoNvWRdImyaICrq5Q/export?format=csv&gid=258299258
+      objectReference: {fileID: 0}
+    - target: {fileID: 8762935971543057847, guid: ab31e374518613348a364fa88bdcb38d, type: 3}
       propertyPath: patternSheetURL
       value: https://docs.google.com/spreadsheets/d/14bb5PbXD9XaTUY9Osye4T6bYEXRoNvWRdImyaICrq5Q/export?format=csv&gid=0
       objectReference: {fileID: 0}

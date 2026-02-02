@@ -222,7 +222,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Health: 1
   moveSpeed: 5
-  weaponHolder: {fileID: 0}
+  weaponHolder: {fileID: 6541205307829659877}
 --- !u!114 &7622759612454958347
 MonoBehaviour:
   m_ObjectHideFlags: 0

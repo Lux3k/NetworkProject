@@ -12,16 +12,20 @@ public class DataManager : SingletonBehaviour<DataManager>
     [SerializeField] private string patternSheetURL;
     [SerializeField] private string phaseSheetURL;
     [SerializeField] private string weaponSheetURL;
+    [SerializeField] private string monsterSheetURL;
 
     [Header("로컬 CSV Fallback")]
     [SerializeField] private string patternCSVPath = "Data/patterns";
     [SerializeField] private string phaseCSVPath = "Data/phases";
     [SerializeField] private string weaponCSVPath = "Data/weapons";
+    [SerializeField] private string monsterCSVPath = "Data/monsters";
 
     private Dictionary<int, PatternData> _patterns = new();
     private Dictionary<int, PhaseData> _phases = new();
     private Dictionary<int, WeaponData> _weapons = new();
+    private Dictionary<int, MonsterData> _monsters = new();
     private Dictionary<int, IBulletStrategy> _strategyCache = new();
+
 
     public bool IsLoaded { get; private set; }
 
@@ -42,6 +46,7 @@ public class DataManager : SingletonBehaviour<DataManager>
         yield return StartCoroutine(LoadCSV(phaseSheetURL, phaseCSVPath, ParsePhases));
         yield return StartCoroutine(LoadCSV(patternSheetURL, patternCSVPath, ParsePatterns));
         yield return StartCoroutine(LoadCSV(weaponSheetURL, weaponCSVPath, ParseWeapons));
+        yield return StartCoroutine(LoadCSV(monsterSheetURL, monsterCSVPath, ParseMonsters));
 
         IsLoaded = true;
         Debug.Log($"DataManager 로드 완료 - 패턴:{_patterns.Count} 페이즈:{_phases.Count} 무기:{_weapons.Count}");
@@ -201,8 +206,43 @@ public class DataManager : SingletonBehaviour<DataManager>
         return strategy;
     }
 
+    
     public void ClearStrategyCache()
     {
         _strategyCache.Clear();
+    }
+
+    void ParseMonsters(string csvText)
+    {
+        var lines = csvText.Split('\n');
+        for (int i = 1; i < lines.Length; i++)
+        {
+            if (string.IsNullOrWhiteSpace(lines[i])) continue;
+            var cols = lines[i].Split(',');
+
+            var monster = new MonsterData
+            {
+                monsterID = int.Parse(cols[0].Trim()),
+                name = cols[1].Trim(),
+                maxHP = float.Parse(cols[2].Trim()),
+                moveSpeed = float.Parse(cols[3].Trim()),
+                attackSpeed = float.Parse(cols[4].Trim()),
+                scoreValue = int.Parse(cols[6].Trim()),
+                expValue = int.Parse(cols[7].Trim())
+            };
+
+            var patternIDs = cols[5].Split('|');
+            monster.attackPatternIDs = new int[patternIDs.Length];
+            for (int j = 0; j < patternIDs.Length; j++)
+                monster.attackPatternIDs[j] = int.Parse(patternIDs[j].Trim());
+
+            _monsters[monster.monsterID] = monster;
+        }
+    }
+
+    public MonsterData GetMonster(int id)
+    {
+        _monsters.TryGetValue(id, out var monster);
+        return monster;
     }
 }
