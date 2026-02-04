@@ -1,11 +1,10 @@
-using Photon.Pun;
 using Cinemachine;
+using Photon.Pun;
 using UnityEngine;
 
-public class PlayerManager : MonoBehaviourPunCallbacks, IPunObservable, IDamagable
+public class PlayerManager : MonoBehaviourPunCallbacks
 {
     [Header("Status")]
-    [SerializeField] private int Health = 100;
     [SerializeField] private float moveSpeed = 10f;
 
     [Header("Combat")]
@@ -69,13 +68,15 @@ public class PlayerManager : MonoBehaviourPunCallbacks, IPunObservable, IDamagab
 
     public void TryAttack(bool isAttacking, Vector2 screenPos)
     {
+        if (!photonView.IsMine) return;
 
-        if (photonView.IsMine)
-        {
-            Vector2 worldPos = Camera.main.ScreenToWorldPoint(screenPos);
 
-            FireBullet(worldPos);
-        }
+        Vector3 worldPos = Camera.main.ScreenToWorldPoint(new Vector3(screenPos.x, screenPos.y, Camera.main.nearClipPlane));
+
+        worldPos.z = 0f;
+        Debug.DrawLine(transform.position, worldPos, Color.red, 1.0f);
+
+        FireBullet(worldPos);
     }
 
     private void FireBullet(Vector2 targetPos)
@@ -85,33 +86,6 @@ public class PlayerManager : MonoBehaviourPunCallbacks, IPunObservable, IDamagab
         Vector2 fireDirection = (targetPos - (Vector2)transform.position).normalized;
         weaponHolder.Fire(fireDirection, BulletType.PlayerBullet);
     }
-
-    [PunRPC]
-    public void TakeDamage(int damage)
-    {
-        Health -= damage;
-        CheckDeath();
-    }
-
-    void CheckDeath()
-    {
-        if (!photonView.IsMine) return;
-
-        if (Health <= 0f)
-        {
-            Logger.Log("»ç¸Á!");
-        }
-    }
-
-    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
-    {
-        if (stream.IsWriting)
-        {
-            stream.SendNext(Health);
-        }
-        else
-        {
-            this.Health = (int)stream.ReceiveNext();
-        }
-    }
 }
+
+

@@ -116,14 +116,15 @@ GameObject:
   - component: {fileID: 2775674517997800387}
   - component: {fileID: 4150826082610880310}
   - component: {fileID: 1251835207537671931}
-  - component: {fileID: -2094387286520533944}
+  - component: {fileID: 7470590532344714531}
+  - component: {fileID: 5761074415402787297}
   m_Layer: 7
   m_Name: playerPrefab
   m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &8253899223769311682
 Transform:
   m_ObjectHideFlags: 0
@@ -220,7 +221,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 93221ff3322d5e8429b8a0c26fa715de, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Health: 1
   moveSpeed: 5
   weaponHolder: {fileID: 6541205307829659877}
 --- !u!114 &7622759612454958347
@@ -253,10 +253,8 @@ MonoBehaviour:
   prefixField: -1
   Synchronization: 3
   OwnershipTransfer: 0
-  observableSearch: 2
-  ObservedComponents:
-  - {fileID: 5604588476984124805}
-  - {fileID: 566242815181589571}
+  observableSearch: 1
+  ObservedComponents: []
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
@@ -322,7 +320,7 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
---- !u!114 &-2094387286520533944
+--- !u!114 &7470590532344714531
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -335,6 +333,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   testPattern: {fileID: 0}
+--- !u!114 &5761074415402787297
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2328065584070534395}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8aec40ec39eef894aad6b279575d8f5d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxHP: 100
 --- !u!1 &2895293319378309599
 GameObject:
   m_ObjectHideFlags: 0

@@ -122,6 +122,50 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &269935171
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 269935172}
+  - component: {fileID: 269935173}
+  m_Layer: 0
+  m_Name: NetworkManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &269935172
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 269935171}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &269935173
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 269935171}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 661fafb7edee68946959b7c0b44dabb3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
@@ -209,7 +253,7 @@ Transform:
   m_GameObject: {fileID: 519420028}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -2.2449944}
+  m_LocalPosition: {x: 0, y: 0, z: -2}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -347,8 +391,16 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8762935971543057847, guid: ab31e374518613348a364fa88bdcb38d, type: 3}
+      propertyPath: waveSheetURL
+      value: https://docs.google.com/spreadsheets/d/14bb5PbXD9XaTUY9Osye4T6bYEXRoNvWRdImyaICrq5Q/export?format=csv&gid=629421448
+      objectReference: {fileID: 0}
+    - target: {fileID: 8762935971543057847, guid: ab31e374518613348a364fa88bdcb38d, type: 3}
       propertyPath: phaseSheetURL
       value: https://docs.google.com/spreadsheets/d/14bb5PbXD9XaTUY9Osye4T6bYEXRoNvWRdImyaICrq5Q/export?format=csv&gid=693865455
+      objectReference: {fileID: 0}
+    - target: {fileID: 8762935971543057847, guid: ab31e374518613348a364fa88bdcb38d, type: 3}
+      propertyPath: stageSheetURL
+      value: https://docs.google.com/spreadsheets/d/14bb5PbXD9XaTUY9Osye4T6bYEXRoNvWRdImyaICrq5Q/export?format=csv&gid=164001124
       objectReference: {fileID: 0}
     - target: {fileID: 8762935971543057847, guid: ab31e374518613348a364fa88bdcb38d, type: 3}
       propertyPath: weaponSheetURL
@@ -521,3 +573,4 @@ SceneRoots:
   - {fileID: 2146729114}
   - {fileID: 543902210}
   - {fileID: 846165084}
+  - {fileID: 269935172}

@@ -1,6 +1,6 @@
-using UnityEngine;
+using Photon.Pun;
 
-public class SingletonBehaviour<T> : MonoBehaviour where T : SingletonBehaviour<T>
+public class SingletonPunBehaviour<T> : MonoBehaviourPunCallbacks where T : SingletonPunBehaviour<T>
 {
     protected bool isDestroyOnLoad = false;
 

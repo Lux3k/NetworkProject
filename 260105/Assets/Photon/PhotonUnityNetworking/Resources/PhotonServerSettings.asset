@@ -47,6 +47,11 @@ MonoBehaviour:
   - RPC_SpawnMonster
   - ExecutePattern
   - RPC_MonsterDamaged
+  - RPC_StartStage
+  - RPC_GameOver
+  - RPC_PlayerDied
+  - RPC_SyncHP
+  - RPC_MonsterAttack
   DisableAutoOpenWizard: 1
   ShowSettings: 0
   DevRegionSetOnce: 0

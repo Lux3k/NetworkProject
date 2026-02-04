@@ -1,22 +1,32 @@
 using Photon.Pun;
-using Photon.Pun.Demo.PunBasics;
-using System;
+using Photon.Realtime;
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
+
+public enum GameState { Playing, GameOver, StageClear }
 
 public class GameManager : MonoBehaviourPunCallbacks
 {
     public static GameManager Instance;
-    [SerializeField] GameObject playerPrefab;
+
+    [SerializeField] private GameObject playerPrefab;
     [SerializeField] private BulletManager bulletManager;
+    [SerializeField] private StageManager stageManager;
+
     public BulletManager BulletManager => bulletManager;
+    public GameState CurrentState { get; private set; } = GameState.Playing;
+
+    private HashSet<int> _deadPlayers = new();
+    private int _score;
+    private float _playTime;
+    private int _totalWaves;
 
 
     void Awake()
     {
         if (Instance == null)
-        {
             Instance = this;
-        }
         else
         {
             Destroy(gameObject);
@@ -24,29 +34,175 @@ public class GameManager : MonoBehaviourPunCallbacks
         }
 
         if (bulletManager == null)
-        {
             bulletManager = FindObjectOfType<BulletManager>();
-
-        }
-
     }
+
     void Start()
-    {
-        
-        if (PlayerManager.LocalPlayerInstance == null) //플레이어매니져가 이미 플레이어 정보를 들고있다면 패스할거임
+    { 
+        CurrentState = GameState.Playing;
+        _deadPlayers.Clear();
+
+
+
+        if (PlayerManager.LocalPlayerInstance == null)
+            PhotonNetwork.Instantiate(playerPrefab.name, Vector3.zero, Quaternion.identity);
+
+        if (stageManager != null)
         {
-            // PlayerManager의 Start()에서 이미 PlayerInputController를 활성화/비활성화하므로
-            // 여기서는 생성만 하면 됩니다
-            PhotonNetwork.Instantiate(playerPrefab.name, new Vector3(0, 0, 0), Quaternion.identity);
+            stageManager.OnWaveStart += OnWaveStart;
+            stageManager.OnAllStageClear += OnGameClear;
         }
-       
     }
+
+    void Update()
+    {
+        HandleEscapeInput();
+
+        if (CurrentState == GameState.Playing)
+            _playTime += Time.deltaTime;
+    }
+
+    void HandleEscapeInput()
+    {
+        if (!Input.GetKeyDown(KeyCode.Escape)) return;
+        if (CurrentState == GameState.GameOver || CurrentState == GameState.StageClear) return;
+
+        if (UIManager.Instance.ExistsOpenUI())
+        {
+            UIManager.Instance.CloseCurrFrontUI();
+            if (!UIManager.Instance.ExistsOpenUI())
+                ResumeGame();
+        }
+        else
+        {
+            PauseGame();
+        }
+    }
+
+    void PauseGame()
+    {
+
+        UIManager.Instance.OpenUI<MenuUI>(new MenuUIData
+        {
+            OnResume = ResumeGame,
+            OnLobby = ReturnToLobby,
+            OnQuit = QuitGame,
+            OnClose = ResumeGame
+        });
+    }
+
+    void ResumeGame()
+    {
+        CurrentState = GameState.Playing;
+    }
+
+    void SetLocalInputEnabled(bool enabled)
+    {
+        var player = PlayerManager.LocalPlayerInstance;
+        if (player != null)
+        {
+            var input = player.GetComponent<PlayerInputController>();
+            if (input != null) input.enabled = enabled;
+        }
+    }
+
+    public void AddScore(int amount) => _score += amount;
+
+    public void OnPlayerDeath(Player player)
+    {
+        _deadPlayers.Add(player.ActorNumber);
+
+        if (_deadPlayers.Count >= PhotonNetwork.CurrentRoom.PlayerCount)
+        {
+            if (PhotonNetwork.IsMasterClient)
+                photonView.RPC(nameof(RPC_GameOver), RpcTarget.All);
+        }
+    }
+
+    [PunRPC]
+    void RPC_GameOver()
+    {
+        CurrentState = GameState.GameOver;
+
+        UIManager.Instance.OpenUI<GameOverUI>(new GameOverUIData
+        {
+            Score = _score,
+            Wave = stageManager?.CurrentWaveIndex ?? 0,
+            OnRestart = Restart,
+            OnLobby = ReturnToLobby,
+            OnQuit = QuitGame
+        });
+    }
+
+
+    void OnWaveStart(int waveIndex, int totalWaves)
+    {
+        _totalWaves++;
+    }
+
+    void OnGameClear()
+    {
+        CurrentState = GameState.StageClear;
+        SetLocalInputEnabled(false);
+
+        UIManager.Instance.OpenUI<GameClearUI>(new GameClearUIData
+        {
+            TotalScore = _score,
+            TotalWaves = _totalWaves,
+            PlayTime = _playTime,
+            OnLobby = ReturnToLobby,
+            OnQuit = QuitGame
+        });
+    }
+
+
+
+    public void Restart()
+    {
+        UIManager.Instance.CloseAllOpenUI();
+        _deadPlayers.Clear();
+        _score = 0;
+
+        if (PhotonNetwork.IsMasterClient)
+            PhotonNetwork.LoadLevel(UnityEngine.SceneManagement.SceneManager.GetActiveScene().name);
+    }
+
+    public void ReturnToLobby()
+    {
+        UIManager.Instance.CloseAllOpenUI();
+        PhotonNetwork.LeaveRoom();
+    }
+
+    void QuitGame()
+    {
+#if UNITY_EDITOR
+        UnityEditor.EditorApplication.isPlaying = false;
+#else
+        Application.Quit();
+#endif
+    }
+
     public override void OnLeftRoom()
     {
         SceneLoader.Instance.LoadScene(SceneType.Lobby);
     }
-    public void LeaveRoom()
+
+    public override void OnPlayerLeftRoom(Player otherPlayer)
     {
-        PhotonNetwork.LeaveRoom();
+        Logger.Log($"플레이어 퇴장: {otherPlayer.NickName}");
+
+        _deadPlayers.Add(otherPlayer.ActorNumber);
+
+        if (PhotonNetwork.IsMasterClient)
+        {
+            int aliveCount = PhotonNetwork.CurrentRoom.PlayerCount - _deadPlayers.Count;
+            if (aliveCount <= 0)
+                photonView.RPC(nameof(RPC_GameOver), RpcTarget.All);
+        }
+    }
+
+    public override void OnMasterClientSwitched(Player newMasterClient)
+    {
+        Logger.Log($"새 마스터: {newMasterClient.NickName}");
     }
 }

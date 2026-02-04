@@ -70,7 +70,6 @@ public class PlayerInputController : MonoBehaviour
 
     void OnAttackCancel(InputAction.CallbackContext context)
     {
-        _manager?.TryAttack(false,Vector2.zero);
     }
     
 }

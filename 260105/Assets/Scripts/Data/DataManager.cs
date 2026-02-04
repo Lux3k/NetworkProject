@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
-using static System.Net.WebRequestMethods;
 
 public class DataManager : SingletonBehaviour<DataManager>
 {
@@ -13,26 +12,27 @@ public class DataManager : SingletonBehaviour<DataManager>
     [SerializeField] private string phaseSheetURL;
     [SerializeField] private string weaponSheetURL;
     [SerializeField] private string monsterSheetURL;
+    [SerializeField] private string waveSheetURL;
+    [SerializeField] private string stageSheetURL;
 
     [Header("로컬 CSV Fallback")]
     [SerializeField] private string patternCSVPath = "Data/patterns";
     [SerializeField] private string phaseCSVPath = "Data/phases";
     [SerializeField] private string weaponCSVPath = "Data/weapons";
     [SerializeField] private string monsterCSVPath = "Data/monsters";
+    [SerializeField] private string waveCSVPath = "Data/waves";
+    [SerializeField] private string stageCSVPath = "Data/stages";
 
     private Dictionary<int, PatternData> _patterns = new();
     private Dictionary<int, PhaseData> _phases = new();
     private Dictionary<int, WeaponData> _weapons = new();
     private Dictionary<int, MonsterData> _monsters = new();
+    private Dictionary<int, WaveData> _waves = new();
+    private Dictionary<int, StageData> _stages = new();
     private Dictionary<int, IBulletStrategy> _strategyCache = new();
 
 
     public bool IsLoaded { get; private set; }
-
-    void Awake()
-    {
-        Init();
-    }
 
     protected override void Init()
     {
@@ -47,9 +47,11 @@ public class DataManager : SingletonBehaviour<DataManager>
         yield return StartCoroutine(LoadCSV(patternSheetURL, patternCSVPath, ParsePatterns));
         yield return StartCoroutine(LoadCSV(weaponSheetURL, weaponCSVPath, ParseWeapons));
         yield return StartCoroutine(LoadCSV(monsterSheetURL, monsterCSVPath, ParseMonsters));
+        yield return StartCoroutine(LoadCSV(waveSheetURL, waveCSVPath, ParseWaves));   
+        yield return StartCoroutine(LoadCSV(stageSheetURL, stageCSVPath, ParseStages));
 
         IsLoaded = true;
-        Debug.Log($"DataManager 로드 완료 - 패턴:{_patterns.Count} 페이즈:{_phases.Count} 무기:{_weapons.Count}");
+        Logger.Log($"DataManager 로드 완료 - 패턴:{_patterns.Count} 페이즈:{_phases.Count} 무기:{_weapons.Count}");
     }
 
     IEnumerator LoadCSV(string sheetURL, string localPath, Action<string> parser)
@@ -63,24 +65,23 @@ public class DataManager : SingletonBehaviour<DataManager>
 
             if (request.result == UnityWebRequest.Result.Success)
             {
-                Debug.Log($"시트에서 로드 성공: {sheetURL}");
+                Logger.Log($"시트에서 로드 성공: {sheetURL}");
                 parser(request.downloadHandler.text);
                 yield break;
             }
 
-            Debug.LogWarning($"시트 로드 실패, 로컬 fallback: {request.error}");
+            Logger.LogWarning($"시트 로드 실패, 로컬 fallback: {request.error}");
         }
 
-        // 로컬 fallback
         var csv = Resources.Load<TextAsset>(localPath);
         if (csv != null)
         {
-            Debug.Log($"로컬 CSV 로드: {localPath}");
+            Logger.Log($"로컬 CSV 로드: {localPath}");
             parser(csv.text);
         }
         else
         {
-            Debug.LogError($"로컬 CSV도 없음: {localPath}");
+            Logger.LogError($"로컬 CSV도 없음: {localPath}");
         }
     }
 
@@ -244,5 +245,67 @@ public class DataManager : SingletonBehaviour<DataManager>
     {
         _monsters.TryGetValue(id, out var monster);
         return monster;
+    }
+
+    void ParseWaves(string csvText)
+    {
+        var lines = csvText.Split('\n');
+        for (int i = 1; i < lines.Length; i++)
+        {
+            if (string.IsNullOrWhiteSpace(lines[i])) continue;
+            var cols = lines[i].Split(',');
+
+            var wave = new WaveData
+            {
+                waveID = int.Parse(cols[0].Trim()),
+                spawnInterval = float.Parse(cols[2].Trim()),
+                duration = float.Parse(cols[3].Trim()),
+                maxAlive = int.Parse(cols[4].Trim()),
+                bossID = int.Parse(cols[5].Trim()),
+                keepSpawn = cols[6].Trim().ToLower() == "true"
+            };
+
+            var monsterIDStrs = cols[1].Trim().Split('|');
+            wave.monsterIDs = new int[monsterIDStrs.Length];
+            for (int j = 0; j < monsterIDStrs.Length; j++)
+                wave.monsterIDs[j] = int.Parse(monsterIDStrs[j].Trim());
+
+            _waves[wave.waveID] = wave;
+        }
+    }
+
+    public WaveData GetWave(int id)
+    {
+        _waves.TryGetValue(id, out var wave);
+        return wave;
+    }
+    void ParseStages(string csvText)
+    {
+        var lines = csvText.Split('\n');
+        for (int i = 1; i < lines.Length; i++)
+        {
+            if (string.IsNullOrWhiteSpace(lines[i])) continue;
+            var cols = lines[i].Split(',');
+
+            var stage = new StageData
+            {
+                stageID = int.Parse(cols[0].Trim()),
+                stageName = cols[1].Trim()
+            };
+
+            var waveIDStrs = cols[2].Trim().Split('|');
+            stage.waveIDs = new int[waveIDStrs.Length];
+            for (int j = 0; j < waveIDStrs.Length; j++)
+                stage.waveIDs[j] = int.Parse(waveIDStrs[j].Trim());
+
+            _stages[stage.stageID] = stage;
+        }
+    }
+
+
+    public StageData GetStage(int id)
+    {
+        _stages.TryGetValue(id, out var stage);
+        return stage;
     }
 }

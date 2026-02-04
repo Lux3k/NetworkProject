@@ -1,3 +1,4 @@
+using Photon.Pun;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
@@ -30,7 +31,10 @@ public class MonsterController : MonoBehaviour, IDamagable
         _currentHP = _data.maxHP;
         _target = null;
         //UpdateUI();
-        StartCoroutine(AttackRoutine());
+        if (PhotonNetwork.IsMasterClient)
+        {
+            StartCoroutine(AttackRoutine());
+        }
     }
 
     private void FixedUpdate()
@@ -77,12 +81,15 @@ public class MonsterController : MonoBehaviour, IDamagable
             if (_target != null && _data.attackPatternIDs.Length > 0)
             {
                 int randomID = _data.attackPatternIDs[Random.Range(0, _data.attackPatternIDs.Length)];
-                Vector2 dir = (_target.position - transform.position).normalized;
-                _shooter.PlayPatternLocal(randomID, transform.position, dir, BulletType.EnemyBullet);
+                _network.OnMonsterAttack(UniqueID, randomID, _target.position);
             }
         }
     }
-
+    public void ExecuteAttack(int patternID, Vector2 targetPos)
+    {
+        Vector2 dir = (targetPos - (Vector2)transform.position).normalized;
+        _shooter.PlayPatternLocal(patternID, transform.position, dir, BulletType.EnemyBullet);
+    }
     public void TakeDamage(int damage)
     {
         _network.OnMonsterDamaged(UniqueID, damage);

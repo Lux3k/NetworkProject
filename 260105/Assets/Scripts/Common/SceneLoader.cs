@@ -1,4 +1,5 @@
 
+using Photon.Pun;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -41,5 +42,13 @@ public class SceneLoader : SingletonBehaviour<SceneLoader>
         Logger.Log($"{sceneType} Scene Load Async Start");
         Time.timeScale = 1.0f;
         return SceneManager.LoadSceneAsync(sceneType.ToString());
+    }
+    public void LoadNetworkScene(SceneType sceneType)
+    {
+        if (!PhotonNetwork.IsMasterClient)
+            return;
+
+        string sceneName = sceneType.ToString();
+        PhotonNetwork.LoadLevel(sceneName);
     }
 }
