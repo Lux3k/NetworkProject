@@ -4,7 +4,7 @@ using Photon.Pun;
 
 public class PlayerInputController : MonoBehaviour
 {
-    [SerializeField] private PlayerManager _manager;
+    [SerializeField] private PlayerController _manager;
 
     private InputAction _moveAction;
     private InputAction _attackAction;
@@ -12,7 +12,7 @@ public class PlayerInputController : MonoBehaviour
     private Camera _mainCamera;
     void Awake()
     {
-        _manager = GetComponent<PlayerManager>();
+        _manager = GetComponent<PlayerController>();
         _photonView = GetComponent<PhotonView>();
 
         _moveAction = InputSystem.actions.FindAction("Move");

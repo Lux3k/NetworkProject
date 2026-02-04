@@ -28,13 +28,13 @@ public class GameClearUI : BaseUI
         base.SetInfo(uiData);
 
         var data = uiData as GameClearUIData;
-        if (scoreTxt) scoreTxt.text = $"총 점수: {data.TotalScore}";
-        if (waveTxt) waveTxt.text = $"클리어 웨이브: {data.TotalWaves}";
+        if (scoreTxt) scoreTxt.text = $"Total Score: {data.TotalScore}";
+        if (waveTxt) waveTxt.text = $"Clear Wave: {data.TotalWaves}";
         if (timeTxt)
         {
             int min = (int)(data.PlayTime / 60);
             int sec = (int)(data.PlayTime % 60);
-            timeTxt.text = $"플레이 시간: {min:00}:{sec:00}";
+            timeTxt.text = $"Play Time: {min:00}:{sec:00}";
         }
 
         _onLobby = data.OnLobby;

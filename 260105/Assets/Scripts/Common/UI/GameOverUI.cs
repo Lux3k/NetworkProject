@@ -2,6 +2,7 @@ using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using Photon.Pun;   
 
 public class GameOverUIData : BaseUIData
 {
@@ -29,12 +30,23 @@ public class GameOverUI : BaseUI
         base.SetInfo(uiData);
 
         var data = uiData as GameOverUIData;
-        if (scoreTxt) scoreTxt.text = $"점수: {data.Score}";
-        if (waveTxt) waveTxt.text = $"웨이브: {data.Wave}";
+        if (scoreTxt) scoreTxt.text = $"Score: {data.Score}";
+        if (waveTxt) waveTxt.text = $"Wave: {data.Wave}";
 
         _onRestart = data.OnRestart;
         _onLobby = data.OnLobby;
         _onQuit = data.OnQuit;
+        if (restartBtn != null)
+        {
+            if (PhotonNetwork.IsMasterClient)
+            {
+                restartBtn.gameObject.SetActive(true); 
+            }
+            else
+            {
+                restartBtn.gameObject.SetActive(false); 
+            }
+        }
     }
 
     public void OnClickRestartBtn()

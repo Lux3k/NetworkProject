@@ -124,7 +124,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &8253899223769311682
 Transform:
   m_ObjectHideFlags: 0
@@ -222,6 +222,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   moveSpeed: 5
+  playerHealth: {fileID: 0}
   weaponHolder: {fileID: 6541205307829659877}
 --- !u!114 &7622759612454958347
 MonoBehaviour:
@@ -254,7 +255,8 @@ MonoBehaviour:
   Synchronization: 3
   OwnershipTransfer: 0
   observableSearch: 1
-  ObservedComponents: []
+  ObservedComponents:
+  - {fileID: 5604588476984124805}
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
@@ -265,7 +267,7 @@ CapsuleCollider2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2328065584070534395}
-  m_Enabled: 1
+  m_Enabled: 0
   m_Density: 1
   m_Material: {fileID: 0}
   m_IncludeLayers:

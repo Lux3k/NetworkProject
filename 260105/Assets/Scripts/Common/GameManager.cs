@@ -1,6 +1,5 @@
 using Photon.Pun;
 using Photon.Realtime;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -44,7 +43,7 @@ public class GameManager : MonoBehaviourPunCallbacks
 
 
 
-        if (PlayerManager.LocalPlayerInstance == null)
+        if (PlayerController.LocalPlayerInstance == null)
             PhotonNetwork.Instantiate(playerPrefab.name, Vector3.zero, Quaternion.identity);
 
         if (stageManager != null)
@@ -96,16 +95,6 @@ public class GameManager : MonoBehaviourPunCallbacks
         CurrentState = GameState.Playing;
     }
 
-    void SetLocalInputEnabled(bool enabled)
-    {
-        var player = PlayerManager.LocalPlayerInstance;
-        if (player != null)
-        {
-            var input = player.GetComponent<PlayerInputController>();
-            if (input != null) input.enabled = enabled;
-        }
-    }
-
     public void AddScore(int amount) => _score += amount;
 
     public void OnPlayerDeath(Player player)
@@ -143,7 +132,6 @@ public class GameManager : MonoBehaviourPunCallbacks
     void OnGameClear()
     {
         CurrentState = GameState.StageClear;
-        SetLocalInputEnabled(false);
 
         UIManager.Instance.OpenUI<GameClearUI>(new GameClearUIData
         {
@@ -160,11 +148,13 @@ public class GameManager : MonoBehaviourPunCallbacks
     public void Restart()
     {
         UIManager.Instance.CloseAllOpenUI();
+
         _deadPlayers.Clear();
         _score = 0;
 
-        if (PhotonNetwork.IsMasterClient)
-            PhotonNetwork.LoadLevel(UnityEngine.SceneManagement.SceneManager.GetActiveScene().name);
+        SceneLoader.Instance.LoadNetworkScene(SceneType.InGame);
+
+
     }
 
     public void ReturnToLobby()

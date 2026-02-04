@@ -1,6 +1,7 @@
-using System;
 using Photon.Pun;
+using System;
 using UnityEngine;
+using UnityEngine.Windows;
 
 public class PlayerHealth : MonoBehaviourPun, IDamagable
 {
@@ -13,11 +14,12 @@ public class PlayerHealth : MonoBehaviourPun, IDamagable
 
     public event Action<float, float> OnHPChanged; 
     public event Action OnDeath;
-
     void Start()
     {
         _currentHP = maxHP;
         OnHPChanged?.Invoke(_currentHP, maxHP);
+        this.gameObject.SetActive(true);
+
     }
 
     [PunRPC]
@@ -50,6 +52,7 @@ public class PlayerHealth : MonoBehaviourPun, IDamagable
     void RPC_PlayerDied()
     {
         GameManager.Instance.OnPlayerDeath(photonView.Owner);
+        this.gameObject.SetActive(false);
     }
 
     public void Heal(float amount)

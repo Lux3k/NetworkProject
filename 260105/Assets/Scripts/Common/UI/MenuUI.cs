@@ -1,58 +1,58 @@
-using System;
-using UnityEngine;
-using UnityEngine.UI;
+    using System;
+    using UnityEngine;
+    using UnityEngine.UI;
 
-public class MenuUIData : BaseUIData
-{
-    public Action OnResume;
-    public Action OnLobby;
-    public Action OnQuit;
-}
-
-public class MenuUI : BaseUI
-{
-    [SerializeField] private Button resumeBtn;
-    [SerializeField] private Button settingsBtn;
-    [SerializeField] private Button lobbyBtn;
-    [SerializeField] private Button quitBtn;
-
-    private Action _onResume;
-    private Action _onLobby;
-    private Action _onQuit;
-
-    public override void SetInfo(BaseUIData uiData)
+    public class MenuUIData : BaseUIData
     {
-        base.SetInfo(uiData);
-
-        var data = uiData as MenuUIData;
-        _onResume = data.OnResume;
-        _onLobby = data.OnLobby;
-        _onQuit = data.OnQuit;
+        public Action OnResume;
+        public Action OnLobby;
+        public Action OnQuit;
     }
 
-    public void OnClickResumeBtn()
+    public class MenuUI : BaseUI
     {
-        //AudioManager.Instance?.PlaySFX(SFX.ui_button_click);
-        _onResume?.Invoke();
-        CloseUI();
-    }
+        [SerializeField] private Button resumeBtn;
+        [SerializeField] private Button settingsBtn;
+        [SerializeField] private Button lobbyBtn;
+        [SerializeField] private Button quitBtn;
 
-    public void OnClickSettingsBtn()
-    {
-        //AudioManager.Instance?.PlaySFX(SFX.ui_button_click);
-        UIManager.Instance.OpenUI<SettingsUI>(new SettingsUIData());
-    }
+        private Action _onResume;
+        private Action _onLobby;
+        private Action _onQuit;
 
-    public void OnClickLobbyBtn()
-    {
-        //AudioManager.Instance?.PlaySFX(SFX.ui_button_click);
-        _onLobby?.Invoke();
-        CloseUI();
-    }
+        public override void SetInfo(BaseUIData uiData)
+        {
+            base.SetInfo(uiData);
 
-    public void OnClickQuitBtn()
-    {
-        //AudioManager.Instance?.PlaySFX(SFX.ui_button_click);
-        _onQuit?.Invoke();
+            var data = uiData as MenuUIData;
+            _onResume = data.OnResume;
+            _onLobby = data.OnLobby;
+            _onQuit = data.OnQuit;
+        }
+
+        public void OnClickResumeBtn()
+        {
+            //AudioManager.Instance?.PlaySFX(SFX.ui_button_click);
+            _onResume?.Invoke();
+            CloseUI();
+        }
+
+        public void OnClickSettingsBtn()
+        {
+            //AudioManager.Instance?.PlaySFX(SFX.ui_button_click);
+            UIManager.Instance.OpenUI<SettingsUI>(new SettingsUIData());
+        }
+
+        public void OnClickLobbyBtn()
+        {
+            //AudioManager.Instance?.PlaySFX(SFX.ui_button_click);
+            _onLobby?.Invoke();
+            CloseUI();
+        }
+
+        public void OnClickQuitBtn()
+        {
+            //AudioManager.Instance?.PlaySFX(SFX.ui_button_click);
+            _onQuit?.Invoke();
+        }
     }
-}

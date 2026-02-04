@@ -2,10 +2,11 @@ using Cinemachine;
 using Photon.Pun;
 using UnityEngine;
 
-public class PlayerManager : MonoBehaviourPunCallbacks
+public class PlayerController : MonoBehaviourPunCallbacks
 {
     [Header("Status")]
     [SerializeField] private float moveSpeed = 10f;
+    [SerializeField] PlayerHealth playerHealth;
 
     [Header("Combat")]
     [SerializeField] private WeaponHolder weaponHolder;
@@ -21,6 +22,9 @@ public class PlayerManager : MonoBehaviourPunCallbacks
 
         if (weaponHolder == null)
             weaponHolder = GetComponentInChildren<WeaponHolder>();
+
+        if(playerHealth == null)
+            playerHealth = GetComponent<PlayerHealth>();
     }
 
     void Start()
@@ -39,6 +43,7 @@ public class PlayerManager : MonoBehaviourPunCallbacks
     {
         if (photonView.IsMine)
         {
+            if (playerHealth.IsDead) return;
             Move();
         }
     }
