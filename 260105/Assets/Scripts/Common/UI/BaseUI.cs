@@ -11,17 +11,17 @@ public class BaseUIData
 
 public class BaseUI : MonoBehaviour
 {
-    public Animation m_UIOpenAnim;
+    public Animation UIOpenAnim;
     
-    private Action m_OnShow;
-    private Action m_OnClose;
+    private Action _onShow;
+    private Action _onClose;
 
     public virtual void Init(Transform anchor)
     {
         Logger.Log($"{GetType()} init.");
 
-        m_OnShow = null;
-        m_OnClose = null;
+        _onShow = null;
+        _onClose = null;
 
         transform.SetParent(anchor);
 
@@ -42,28 +42,28 @@ public class BaseUI : MonoBehaviour
     {
         Logger.Log($"{GetType()} set info.");
 
-        m_OnShow = uiData.OnShow;
-        m_OnClose = uiData.OnClose;
+        _onShow = uiData.OnShow;
+        _onClose = uiData.OnClose;
     }
 
     public virtual void ShowUI()
     {
-        if(m_UIOpenAnim)
+        if(UIOpenAnim)
         {
-            m_UIOpenAnim.Play();
+            UIOpenAnim.Play();
         }
 
-        m_OnShow?.Invoke();
-        m_OnShow = null;
+        _onShow?.Invoke();
+        _onShow = null;
     }
 
     public virtual void CloseUI(bool isCloseAll = false)
     {
         if (!isCloseAll)
         {
-            m_OnClose?.Invoke();
+            _onClose?.Invoke();
         }
-        m_OnClose = null;
+        _onClose = null;
 
         UIManager.Instance.CloseUI(this);
     }

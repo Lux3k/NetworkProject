@@ -9,11 +9,11 @@ public class BulletManager : MonoBehaviour
     [SerializeField] private int _poolSize = 100;
 
     [Header("Pattern Database")]
-    [SerializeField] private List<BulletPatternSO> patternDatabase;
+    [SerializeField] private List<BulletPatternSO> _patternDatabase;
 
     // 총알 풀링
     [SerializeField]private List<Bullet> _allActiveBullets = new List<Bullet>();
-    private Stack<Bullet> _bulletPool = new Stack<Bullet>();
+    private Stack<Bullet> BulletPool = new Stack<Bullet>();
 
     // 그룹 관리
     private List<BulletGroup> _activeGroups = new List<BulletGroup>();
@@ -34,18 +34,18 @@ public class BulletManager : MonoBehaviour
     {
         if ( _patternDict != null) return;
         _patternDict = new Dictionary<int, BulletPatternSO>();
-        if (patternDatabase != null)
+        if (_patternDatabase != null)
         {
-            foreach (var pattern in patternDatabase)
+            foreach (var pattern in _patternDatabase)
             {
                 if (pattern != null && pattern.patternID != 0)
                     _patternDict[pattern.patternID] = pattern;
             }
         }
 
-        if (_bulletPool.Count == 0)
+        if (BulletPool.Count == 0)
         {
-            _bulletPool = new Stack<Bullet>(_poolSize);
+            BulletPool = new Stack<Bullet>(_poolSize);
             _allActiveBullets = new List<Bullet>(_poolSize);
             _groupPool = new Stack<BulletGroup>(_poolSize);
             _groupDict = new Dictionary<int, BulletGroup>(_poolSize);
@@ -56,7 +56,7 @@ public class BulletManager : MonoBehaviour
                 {
                     Bullet newBullet = Instantiate(_bulletPrefab);
                     newBullet.gameObject.SetActive(false);
-                    _bulletPool.Push(newBullet);
+                    BulletPool.Push(newBullet);
                 }
             }
         }
@@ -95,7 +95,7 @@ public class BulletManager : MonoBehaviour
 
             if (!bullet.gameObject.activeSelf)
             {
-                _bulletPool.Push(bullet);
+                BulletPool.Push(bullet);
 
                 int lastIndex = _allActiveBullets.Count - 1;
                 _allActiveBullets[i] = _allActiveBullets[lastIndex];
@@ -186,8 +186,8 @@ public class BulletManager : MonoBehaviour
     {
         Bullet bullet;
 
-        if (_bulletPool.Count > 0)
-            bullet = _bulletPool.Pop();
+        if (BulletPool.Count > 0)
+            bullet = BulletPool.Pop();
         else
             bullet = Instantiate(_bulletPrefab);
 

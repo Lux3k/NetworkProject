@@ -5,21 +5,21 @@ public class SettingsUIData : BaseUIData { }
 
 public class SettingsUI : BaseUI
 {
-    [SerializeField] private Slider bgmSlider;
-    [SerializeField] private Slider sfxSlider;
+    [SerializeField] private Slider _bgmSlider;
+    [SerializeField] private Slider _sfxSlider;
 
     public override void SetInfo(BaseUIData uiData)
     {
         base.SetInfo(uiData);
 
-        bgmSlider.value = PlayerPrefs.GetFloat("BGMVolume", 1f);
-        sfxSlider.value = PlayerPrefs.GetFloat("SFXVolume", 1f);
+        _bgmSlider.value = PlayerPrefs.GetFloat("BGMVolume", 1f);
+        _sfxSlider.value = PlayerPrefs.GetFloat("SFXVolume", 1f);
 
-        bgmSlider.onValueChanged.RemoveAllListeners();
-        sfxSlider.onValueChanged.RemoveAllListeners();
+        _bgmSlider.onValueChanged.RemoveAllListeners();
+        _sfxSlider.onValueChanged.RemoveAllListeners();
 
-        bgmSlider.onValueChanged.AddListener(OnBGMChanged);
-        sfxSlider.onValueChanged.AddListener(OnSFXChanged);
+        _bgmSlider.onValueChanged.AddListener(OnBGMChanged);
+        _sfxSlider.onValueChanged.AddListener(OnSFXChanged);
     }
 
     void OnBGMChanged(float value)

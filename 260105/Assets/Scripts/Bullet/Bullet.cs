@@ -17,7 +17,7 @@ public class Bullet : MonoBehaviour
     public Transform BulletTransform { get; private set; }
 
     public int GroupID { get; set; } = NO_GROUP_ID;
-    public int _ownerActorNumber { get; set; }
+    public int OwnerActorNumber { get; set; }
     private IBulletStrategy _moveStrategy;
 
 
@@ -49,7 +49,7 @@ public class Bullet : MonoBehaviour
 
         _currentLifeTime = LifeTime;
         GroupID = groupID;
-        _ownerActorNumber = ownerID;
+        OwnerActorNumber = ownerID;
         _spriteRenderer.color = bulletColor;
     }
     public void ResetGroupID()
@@ -79,7 +79,7 @@ public class Bullet : MonoBehaviour
     private void HandleHit(Collider2D collision)
     {
 
-        if (PhotonNetwork.LocalPlayer.ActorNumber == _ownerActorNumber)
+        if (PhotonNetwork.LocalPlayer.ActorNumber == OwnerActorNumber)
         {
 
             if (collision.TryGetComponent<IDamagable>(out IDamagable damagable))

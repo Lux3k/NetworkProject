@@ -15,11 +15,11 @@ public class GameOverUIData : BaseUIData
 
 public class GameOverUI : BaseUI
 {
-    [SerializeField] private TextMeshProUGUI scoreTxt;
-    [SerializeField] private TextMeshProUGUI waveTxt;
-    [SerializeField] private Button restartBtn;
-    [SerializeField] private Button lobbyBtn;
-    [SerializeField] private Button quitBtn;
+    [SerializeField] private TextMeshProUGUI _scoreTxt;
+    [SerializeField] private TextMeshProUGUI _waveTxt;
+    [SerializeField] private Button _restartBtn;
+    [SerializeField] private Button _lobbyBtn;
+    [SerializeField] private Button _quitBtn;
 
     private Action _onRestart;
     private Action _onLobby;
@@ -30,21 +30,21 @@ public class GameOverUI : BaseUI
         base.SetInfo(uiData);
 
         var data = uiData as GameOverUIData;
-        if (scoreTxt) scoreTxt.text = $"Score: {data.Score}";
-        if (waveTxt) waveTxt.text = $"Wave: {data.Wave}";
+        if (_scoreTxt) _scoreTxt.text = $"Score: {data.Score}";
+        if (_waveTxt) _waveTxt.text = $"Wave: {data.Wave}";
 
         _onRestart = data.OnRestart;
         _onLobby = data.OnLobby;
         _onQuit = data.OnQuit;
-        if (restartBtn != null)
+        if (_restartBtn != null)
         {
             if (PhotonNetwork.IsMasterClient)
             {
-                restartBtn.gameObject.SetActive(true); 
+                _restartBtn.gameObject.SetActive(true); 
             }
             else
             {
-                restartBtn.gameObject.SetActive(false); 
+                _restartBtn.gameObject.SetActive(false); 
             }
         }
     }

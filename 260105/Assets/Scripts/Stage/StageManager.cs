@@ -6,8 +6,8 @@ using UnityEngine;
 
 public class StageManager : MonoBehaviourPunCallbacks, IStageNetwork
 {
-    [SerializeField] private MonsterSpawner spawner;
-    [SerializeField] private int startStageID = 1;
+    [SerializeField] private MonsterSpawner _spawner;
+    [SerializeField] private int _startStageID = 1;
 
     private StageData _currentStage;
     private int _currentWaveIndex;
@@ -27,7 +27,7 @@ public class StageManager : MonoBehaviourPunCallbacks, IStageNetwork
         yield return new WaitUntil(() => DataManager.Instance != null && DataManager.Instance.IsLoaded);
 
         if (PhotonNetwork.IsMasterClient)
-            RequestStartStage(startStageID);
+            RequestStartStage(_startStageID);
     }
 
     public void RequestStartStage(int stageID)
@@ -80,7 +80,7 @@ public class StageManager : MonoBehaviourPunCallbacks, IStageNetwork
             OnWaveStart?.Invoke(i, _currentStage.waveIDs.Length);
             Logger.Log($"웨이브 {i + 1}/{_currentStage.waveIDs.Length} 시작");
 
-            yield return StartCoroutine(spawner.RunWave(wave));
+            yield return StartCoroutine(_spawner.RunWave(wave));
 
             Logger.Log($"웨이브 {i + 1} 완료");
         }

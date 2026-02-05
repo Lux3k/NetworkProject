@@ -9,11 +9,11 @@ public class GameManager : MonoBehaviourPunCallbacks
 {
     public static GameManager Instance;
 
-    [SerializeField] private GameObject playerPrefab;
-    [SerializeField] private BulletManager bulletManager;
-    [SerializeField] private StageManager stageManager;
+    [SerializeField] private GameObject _playerPrefab;
+    [SerializeField] private BulletManager _bulletManager;
+    [SerializeField] private StageManager _stageManager;
 
-    public BulletManager BulletManager => bulletManager;
+    public BulletManager BulletManager => _bulletManager;
     public GameState CurrentState { get; private set; } = GameState.Playing;
 
     private HashSet<int> _deadPlayers = new();
@@ -32,8 +32,8 @@ public class GameManager : MonoBehaviourPunCallbacks
             return;
         }
 
-        if (bulletManager == null)
-            bulletManager = FindObjectOfType<BulletManager>();
+        if (_bulletManager == null)
+            _bulletManager = FindObjectOfType<BulletManager>();
     }
 
     void Start()
@@ -44,12 +44,12 @@ public class GameManager : MonoBehaviourPunCallbacks
 
 
         if (PlayerController.LocalPlayerInstance == null)
-            PhotonNetwork.Instantiate(playerPrefab.name, Vector3.zero, Quaternion.identity);
+            PhotonNetwork.Instantiate(_playerPrefab.name, Vector3.zero, Quaternion.identity);
 
-        if (stageManager != null)
+        if (_stageManager != null)
         {
-            stageManager.OnWaveStart += OnWaveStart;
-            stageManager.OnAllStageClear += OnGameClear;
+            _stageManager.OnWaveStart += OnWaveStart;
+            _stageManager.OnAllStageClear += OnGameClear;
         }
     }
 
@@ -61,6 +61,11 @@ public class GameManager : MonoBehaviourPunCallbacks
             _playTime += Time.deltaTime;
     }
 
+    private void OnDisable()
+    {
+        _stageManager.OnWaveStart -= OnWaveStart;
+        _stageManager.OnAllStageClear -= OnGameClear;
+    }
     void HandleEscapeInput()
     {
         if (!Input.GetKeyDown(KeyCode.Escape)) return;
@@ -116,7 +121,7 @@ public class GameManager : MonoBehaviourPunCallbacks
         UIManager.Instance.OpenUI<GameOverUI>(new GameOverUIData
         {
             Score = _score,
-            Wave = stageManager?.CurrentWaveIndex ?? 0,
+            Wave = _stageManager?.CurrentWaveIndex ?? 0,
             OnRestart = Restart,
             OnLobby = ReturnToLobby,
             OnQuit = QuitGame

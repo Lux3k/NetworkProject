@@ -5,9 +5,9 @@ using UnityEngine;
 
 public class MonsterSpawner : MonoBehaviour
 {
-    [SerializeField] private GameObject monsterPrefab;
-    [SerializeField] private int poolSize = 50;
-    [SerializeField] private float spawnRadius = 15f;
+    [SerializeField] private GameObject _monsterPrefab;
+    [SerializeField] private int _poolSize = 50;
+    [SerializeField] private float _spawnRadius = 15f;
 
     private IMonsterSpawnNetwork _network;
     private Stack<MonsterController> _pool = new();
@@ -15,7 +15,7 @@ public class MonsterSpawner : MonoBehaviour
 
     private MonsterController _currentBoss;
 
-    public int ActiveCount => poolSize - _pool.Count;
+    public int ActiveCount => _poolSize - _pool.Count;
     public bool IsBossAlive => _currentBoss != null && _currentBoss.gameObject.activeSelf;
 
     public void Initialize(IMonsterSpawnNetwork network)
@@ -25,9 +25,9 @@ public class MonsterSpawner : MonoBehaviour
 
     void Awake()
     {
-        for (int i = 0; i < poolSize; i++)
+        for (int i = 0; i < _poolSize; i++)
         {
-            var monster = Instantiate(monsterPrefab);
+            var monster = Instantiate(_monsterPrefab);
             monster.SetActive(false);
             _pool.Push(monster.GetComponent<MonsterController>());
         }
@@ -121,7 +121,7 @@ public class MonsterSpawner : MonoBehaviour
         if (_pool.Count > 0)
             monster = _pool.Pop();
         else
-            monster = Instantiate(monsterPrefab).GetComponent<MonsterController>();
+            monster = Instantiate(_monsterPrefab).GetComponent<MonsterController>();
 
         monster.transform.position = pos;
         monster.gameObject.SetActive(true);
@@ -145,10 +145,10 @@ public class MonsterSpawner : MonoBehaviour
     private Vector2 GetRandomSpawnPosition()
     {
         Camera cam = Camera.main;
-        if (cam == null) return Random.insideUnitCircle * spawnRadius;
+        if (cam == null) return Random.insideUnitCircle * _spawnRadius;
 
         float angle = Random.Range(0f, 360f) * Mathf.Deg2Rad;
         Vector2 camPos = cam.transform.position;
-        return camPos + new Vector2(Mathf.Cos(angle), Mathf.Sin(angle)) * spawnRadius;
+        return camPos + new Vector2(Mathf.Cos(angle), Mathf.Sin(angle)) * _spawnRadius;
     }
 }

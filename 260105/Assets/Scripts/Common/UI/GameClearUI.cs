@@ -14,11 +14,11 @@ public class GameClearUIData : BaseUIData
 
 public class GameClearUI : BaseUI
 {
-    [SerializeField] private TextMeshProUGUI scoreTxt;
-    [SerializeField] private TextMeshProUGUI waveTxt;
-    [SerializeField] private TextMeshProUGUI timeTxt;
-    [SerializeField] private Button lobbyBtn;
-    [SerializeField] private Button quitBtn;
+    [SerializeField] private TextMeshProUGUI _scoreTxt;
+    [SerializeField] private TextMeshProUGUI _waveTxt;
+    [SerializeField] private TextMeshProUGUI _timeTxt;
+    [SerializeField] private Button _lobbyBtn;
+    [SerializeField] private Button _quitBtn;
 
     private Action _onLobby;
     private Action _onQuit;
@@ -28,13 +28,13 @@ public class GameClearUI : BaseUI
         base.SetInfo(uiData);
 
         var data = uiData as GameClearUIData;
-        if (scoreTxt) scoreTxt.text = $"Total Score: {data.TotalScore}";
-        if (waveTxt) waveTxt.text = $"Clear Wave: {data.TotalWaves}";
-        if (timeTxt)
+        if (_scoreTxt) _scoreTxt.text = $"Total Score: {data.TotalScore}";
+        if (_waveTxt) _waveTxt.text = $"Clear Wave: {data.TotalWaves}";
+        if (_timeTxt)
         {
             int min = (int)(data.PlayTime / 60);
             int sec = (int)(data.PlayTime % 60);
-            timeTxt.text = $"Play Time: {min:00}:{sec:00}";
+            _timeTxt.text = $"Play Time: {min:00}:{sec:00}";
         }
 
         _onLobby = data.OnLobby;

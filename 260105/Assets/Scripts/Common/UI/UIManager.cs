@@ -6,9 +6,9 @@ public class UIManager : SingletonBehaviour<UIManager>
     public Transform UICanvasTrs;
     public Transform ClosedUITrs;
 	
-    private BaseUI m_FrontUI;
-    private Dictionary<System.Type, GameObject> m_OpenUIPool = new Dictionary<System.Type, GameObject>();
-    private Dictionary<System.Type, GameObject> m_ClosedUIPool = new Dictionary<System.Type, GameObject>();
+    private BaseUI _frontUI;
+    private Dictionary<System.Type, GameObject> _openUIPool = new Dictionary<System.Type, GameObject>();
+    private Dictionary<System.Type, GameObject> _closedUIPool = new Dictionary<System.Type, GameObject>();
 
     private BaseUI GetUI<T>(out bool isAlreadyOpen)
     {
@@ -17,15 +17,15 @@ public class UIManager : SingletonBehaviour<UIManager>
         BaseUI ui = null;
         isAlreadyOpen = false;
 
-        if (m_OpenUIPool.ContainsKey(uiType))
+        if (_openUIPool.ContainsKey(uiType))
         {
-            ui = m_OpenUIPool[uiType].GetComponent<BaseUI>();
+            ui = _openUIPool[uiType].GetComponent<BaseUI>();
             isAlreadyOpen = true;
         }
-        else if (m_ClosedUIPool.ContainsKey(uiType))
+        else if (_closedUIPool.ContainsKey(uiType))
         {
-            ui = m_ClosedUIPool[uiType].GetComponent<BaseUI>();
-            m_ClosedUIPool.Remove(uiType);
+            ui = _closedUIPool[uiType].GetComponent<BaseUI>();
+            _closedUIPool.Remove(uiType);
         }
         else
         {
@@ -64,8 +64,8 @@ public class UIManager : SingletonBehaviour<UIManager>
         ui.SetInfo(uiData);
         ui.ShowUI();
 
-        m_FrontUI = ui;
-        m_OpenUIPool[uiType] = ui.gameObject;
+        _frontUI = ui;
+        _openUIPool[uiType] = ui.gameObject;
     }
 
     public void CloseUI(BaseUI ui)
@@ -75,44 +75,44 @@ public class UIManager : SingletonBehaviour<UIManager>
         Logger.Log($"CloseUI UI:{uiType}");
 
         ui.gameObject.SetActive(false);
-        m_OpenUIPool.Remove(uiType);
-        m_ClosedUIPool[uiType] = ui.gameObject;
+        _openUIPool.Remove(uiType);
+        _closedUIPool[uiType] = ui.gameObject;
         ui.transform.SetParent(ClosedUITrs);
 
-        m_FrontUI = null;
+        _frontUI = null;
         var lastChild = UICanvasTrs.GetChild(UICanvasTrs.childCount - 1);
         if (lastChild)
         {
-            m_FrontUI = lastChild.gameObject.GetComponent<BaseUI>();
+            _frontUI = lastChild.gameObject.GetComponent<BaseUI>();
         }
     }
 
     public BaseUI GetActiveUI<T>()
     {
         var uiType = typeof(T);
-        return m_OpenUIPool.ContainsKey(uiType) ? m_OpenUIPool[uiType].GetComponent<BaseUI>() : null;
+        return _openUIPool.ContainsKey(uiType) ? _openUIPool[uiType].GetComponent<BaseUI>() : null;
     }
 
     public bool ExistsOpenUI()
     {
-        return m_FrontUI != null;
+        return _frontUI != null;
     }
 
     public BaseUI GetCurrentFrontUI()
     {
-        return m_FrontUI;
+        return _frontUI;
     }
 
     public void CloseCurrFrontUI()
     {
-        m_FrontUI.CloseUI();
+        _frontUI.CloseUI();
     }
 
     public void CloseAllOpenUI()
     {
-        while (m_FrontUI)
+        while (_frontUI)
         {
-            m_FrontUI.CloseUI(true);
+            _frontUI.CloseUI(true);
         }
     }
 }

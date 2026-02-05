@@ -8,20 +8,20 @@ public class DataManager : SingletonBehaviour<DataManager>
 {
 
     [Header("Google Sheets URLs")]
-    [SerializeField] private string patternSheetURL;
-    [SerializeField] private string phaseSheetURL;
-    [SerializeField] private string weaponSheetURL;
-    [SerializeField] private string monsterSheetURL;
-    [SerializeField] private string waveSheetURL;
-    [SerializeField] private string stageSheetURL;
+    [SerializeField] private string _patternSheetURL;
+    [SerializeField] private string _phaseSheetURL;
+    [SerializeField] private string _weaponSheetURL;
+    [SerializeField] private string _monsterSheetURL;
+    [SerializeField] private string _waveSheetURL;
+    [SerializeField] private string _stageSheetURL;
 
     [Header("로컬 CSV Fallback")]
-    [SerializeField] private string patternCSVPath = "Data/patterns";
-    [SerializeField] private string phaseCSVPath = "Data/phases";
-    [SerializeField] private string weaponCSVPath = "Data/weapons";
-    [SerializeField] private string monsterCSVPath = "Data/monsters";
-    [SerializeField] private string waveCSVPath = "Data/waves";
-    [SerializeField] private string stageCSVPath = "Data/stages";
+    [SerializeField] private string _patternCSVPath = "Data/patterns";
+    [SerializeField] private string _phaseCSVPath = "Data/phases";
+    [SerializeField] private string _weaponCSVPath = "Data/weapons";
+    [SerializeField] private string _monsterCSVPath = "Data/monsters";
+    [SerializeField] private string _waveCSVPath = "Data/waves";
+    [SerializeField] private string _stageCSVPath = "Data/stages";
 
     private Dictionary<int, PatternData> _patterns = new();
     private Dictionary<int, PhaseData> _phases = new();
@@ -37,18 +37,18 @@ public class DataManager : SingletonBehaviour<DataManager>
     protected override void Init()
     {
 
-        base.isDestroyOnLoad = true;
+        base._isDestroyOnLoad = true;
 
         base.Init();
     }
     IEnumerator Start()
     {
-        yield return StartCoroutine(LoadCSV(phaseSheetURL, phaseCSVPath, ParsePhases));
-        yield return StartCoroutine(LoadCSV(patternSheetURL, patternCSVPath, ParsePatterns));
-        yield return StartCoroutine(LoadCSV(weaponSheetURL, weaponCSVPath, ParseWeapons));
-        yield return StartCoroutine(LoadCSV(monsterSheetURL, monsterCSVPath, ParseMonsters));
-        yield return StartCoroutine(LoadCSV(waveSheetURL, waveCSVPath, ParseWaves));   
-        yield return StartCoroutine(LoadCSV(stageSheetURL, stageCSVPath, ParseStages));
+        yield return StartCoroutine(LoadCSV(_phaseSheetURL, _phaseCSVPath, ParsePhases));
+        yield return StartCoroutine(LoadCSV(_patternSheetURL, _patternCSVPath, ParsePatterns));
+        yield return StartCoroutine(LoadCSV(_weaponSheetURL, _weaponCSVPath, ParseWeapons));
+        yield return StartCoroutine(LoadCSV(_monsterSheetURL, _monsterCSVPath, ParseMonsters));
+        yield return StartCoroutine(LoadCSV(_waveSheetURL, _waveCSVPath, ParseWaves));   
+        yield return StartCoroutine(LoadCSV(_stageSheetURL, _stageCSVPath, ParseStages));
 
         IsLoaded = true;
         Logger.Log($"DataManager 로드 완료 - 패턴:{_patterns.Count} 페이즈:{_phases.Count} 무기:{_weapons.Count}");

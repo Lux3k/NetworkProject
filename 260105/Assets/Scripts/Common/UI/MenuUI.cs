@@ -11,10 +11,10 @@
 
     public class MenuUI : BaseUI
     {
-        [SerializeField] private Button resumeBtn;
-        [SerializeField] private Button settingsBtn;
-        [SerializeField] private Button lobbyBtn;
-        [SerializeField] private Button quitBtn;
+        [SerializeField] private Button _resumeBtn;
+        [SerializeField] private Button _settingsBtn;
+        [SerializeField] private Button _lobbyBtn;
+        [SerializeField] private Button _quitBtn;
 
         private Action _onResume;
         private Action _onLobby;

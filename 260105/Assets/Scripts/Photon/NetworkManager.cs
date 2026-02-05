@@ -9,7 +9,7 @@ public class NetworkManager : SingletonPunBehaviour<NetworkManager>
     public Action OnMasterChanged;
     protected override void Init()
     {
-        base.isDestroyOnLoad = true;
+        base._isDestroyOnLoad = true;
 
         base.Init();
     }

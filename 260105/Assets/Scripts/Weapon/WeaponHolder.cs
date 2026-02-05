@@ -4,14 +4,14 @@ using UnityEngine.InputSystem;
 
 public class WeaponHolder : MonoBehaviour
 {
-    [SerializeField] private List<Weapon> weapons = new();
+    [SerializeField] private List<Weapon> _weapons = new();
     private int _currentIndex = 0;
 
-    public Weapon CurrentWeapon => weapons.Count > 0 ? weapons[_currentIndex] : null;
+    public Weapon CurrentWeapon => _weapons.Count > 0 ? _weapons[_currentIndex] : null;
 
     void Update()
     {
-        foreach (var weapon in weapons)
+        foreach (var weapon in _weapons)
             weapon.UpdateTimer();
 
         float scroll = Mouse.current.scroll.ReadValue().y;
@@ -29,14 +29,14 @@ public class WeaponHolder : MonoBehaviour
 
     private void SwitchWeapon(int newIndex)
     {
-        if (weapons.Count == 0) return;
+        if (_weapons.Count == 0) return;
 
         CurrentWeapon.gameObject.SetActive(false);
 
-        if (newIndex >= weapons.Count)
+        if (newIndex >= _weapons.Count)
             newIndex = 0;
         else if (newIndex < 0)
-            newIndex = weapons.Count - 1;
+            newIndex = _weapons.Count - 1;
 
         _currentIndex = newIndex;
 
@@ -45,6 +45,6 @@ public class WeaponHolder : MonoBehaviour
 
     public void AddWeapon(Weapon weapon)
     {
-        weapons.Add(weapon);
+        _weapons.Add(weapon);
     }
 }

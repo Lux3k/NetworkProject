@@ -2,13 +2,13 @@ using Photon.Pun;
 
 public class SingletonPunBehaviour<T> : MonoBehaviourPunCallbacks where T : SingletonPunBehaviour<T>
 {
-    protected bool isDestroyOnLoad = false;
+    protected bool _isDestroyOnLoad = false;
 
-    protected static T instance = null;
+    protected static T _instance = null;
 
     public static T Instance
     {
-        get { return instance; }
+        get { return _instance; }
     }
 
     private void Awake()
@@ -18,10 +18,10 @@ public class SingletonPunBehaviour<T> : MonoBehaviourPunCallbacks where T : Sing
 
     protected virtual void Init()
     {
-        if (instance == null)
+        if (_instance == null)
         {
-            instance = (T)this;
-            if (isDestroyOnLoad)
+            _instance = (T)this;
+            if (_isDestroyOnLoad)
             {
                 DontDestroyOnLoad(this);
             }
@@ -41,7 +41,7 @@ public class SingletonPunBehaviour<T> : MonoBehaviourPunCallbacks where T : Sing
     //삭제시 추가로 처리할 내용이 있으면 오버라이드해서 사용
     protected virtual void Dispose()
     {
-        instance = null;
+        _instance = null;
     }
 }
 

@@ -9,11 +9,11 @@ public class LobbyUI : MonoBehaviourPunCallbacks
 {
 
     
-    [SerializeField] TMP_InputField createRoomInput;
-    [SerializeField] TMP_InputField joinRoomInput;
+    [SerializeField] TMP_InputField _createRoomInput;
+    [SerializeField] TMP_InputField _joinRoomInput;
 
-    [SerializeField] GameObject roomPrefab;
-    [SerializeField] Transform roomListPanel;
+    [SerializeField] GameObject _roomPrefab;
+    [SerializeField] Transform _roomListPanel;
 
     private void Start()
     {
@@ -22,11 +22,11 @@ public class LobbyUI : MonoBehaviourPunCallbacks
 
     public void CreateRoom()
     {
-        PhotonNetwork.CreateRoom(createRoomInput.text); //옆에 인풋필드에 들어있던 내용의 이름으로 방 생성
+        PhotonNetwork.CreateRoom(_createRoomInput.text); //옆에 인풋필드에 들어있던 내용의 이름으로 방 생성
     }
     public void JoinRoom()
     {
-        PhotonNetwork.JoinRoom(joinRoomInput.text);
+        PhotonNetwork.JoinRoom(_joinRoomInput.text);
     }
     public void JoinRandomRoom()
     {
@@ -58,7 +58,7 @@ public class LobbyUI : MonoBehaviourPunCallbacks
 
     public override void OnRoomListUpdate(List<RoomInfo> roomList) //얘는 언제 호출? 룸 정보가 변했을 때, 조인로비 성공시 한번, 
     {
-        foreach (Transform child in roomListPanel)
+        foreach (Transform child in _roomListPanel)
         {
             Destroy(child.gameObject);
         }
@@ -68,7 +68,7 @@ public class LobbyUI : MonoBehaviourPunCallbacks
            
             if (roomInfo.RemovedFromList || !roomInfo.IsOpen || !roomInfo.IsVisible) continue;
 
-            var room = Instantiate(roomPrefab, roomListPanel);
+            var room = Instantiate(_roomPrefab, _roomListPanel);
             room.GetComponentInChildren<TMP_Text>().text = roomInfo.Name;
         }
     }

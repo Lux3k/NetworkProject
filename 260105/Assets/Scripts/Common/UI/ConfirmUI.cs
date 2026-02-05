@@ -28,36 +28,36 @@ public class ConfirmUI : BaseUI
     public TextMeshProUGUI OKBtnTxt = null;
     public TextMeshProUGUI CancelBtnTxt = null;
 
-    private ConfirmUIData m_ConfirmUIData = null;
-    private Action m_OnClickOKBtn = null;
-    private Action m_OnClickCancelBtn = null;
+    private ConfirmUIData _confirmUIData = null;
+    private Action _onClickOKBtn = null;
+    private Action _onClickCancelBtn = null;
 
     public override void SetInfo(BaseUIData uiData)
     {
         base.SetInfo(uiData);
 
-        m_ConfirmUIData = uiData as ConfirmUIData;
+        _confirmUIData = uiData as ConfirmUIData;
 
-        TitleTxt.text = m_ConfirmUIData.TitleTxt;
-        DescTxt.text = m_ConfirmUIData.DescTxt;
-        OKBtnTxt.text = m_ConfirmUIData.OKBtnTxt;
-        m_OnClickOKBtn = m_ConfirmUIData.OnClickOKBtn;
-        CancelBtnTxt.text = m_ConfirmUIData.CancelBtnTxt;
-        m_OnClickCancelBtn = m_ConfirmUIData.OnClickCancelBtn;
+        TitleTxt.text = _confirmUIData.TitleTxt;
+        DescTxt.text = _confirmUIData.DescTxt;
+        OKBtnTxt.text = _confirmUIData.OKBtnTxt;
+        _onClickOKBtn = _confirmUIData.OnClickOKBtn;
+        CancelBtnTxt.text = _confirmUIData.CancelBtnTxt;
+        _onClickCancelBtn = _confirmUIData.OnClickCancelBtn;
 
         OKBtn.gameObject.SetActive(true);
-        CancelBtn.gameObject.SetActive(m_ConfirmUIData.ConfirmType == ConfirmType.OK_CANCEL);
+        CancelBtn.gameObject.SetActive(_confirmUIData.ConfirmType == ConfirmType.OK_CANCEL);
     }
 
     public void OnClickOKBtn()
     {
-        m_OnClickOKBtn?.Invoke();
+        _onClickOKBtn?.Invoke();
         CloseUI();
     }
 
     public void OnClickCancelBtn()
     {
-        m_OnClickCancelBtn?.Invoke();
+        _onClickCancelBtn?.Invoke();
         CloseUI();
     }
 }

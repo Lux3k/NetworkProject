@@ -5,8 +5,8 @@ using UnityEngine;
 public class PlayerController : MonoBehaviourPunCallbacks
 {
     [Header("Status")]
-    [SerializeField] private float moveSpeed = 10f;
-    [SerializeField] PlayerHealth playerHealth;
+    [SerializeField] private float _moveSpeed = 10f;
+    [SerializeField] private PlayerHealth _playerHealth;
 
     [Header("Combat")]
     [SerializeField] private WeaponHolder weaponHolder;
@@ -23,8 +23,8 @@ public class PlayerController : MonoBehaviourPunCallbacks
         if (weaponHolder == null)
             weaponHolder = GetComponentInChildren<WeaponHolder>();
 
-        if(playerHealth == null)
-            playerHealth = GetComponent<PlayerHealth>();
+        if(_playerHealth == null)
+            _playerHealth = GetComponent<PlayerHealth>();
     }
 
     void Start()
@@ -43,7 +43,6 @@ public class PlayerController : MonoBehaviourPunCallbacks
     {
         if (photonView.IsMine)
         {
-            if (playerHealth.IsDead) return;
             Move();
         }
     }
@@ -57,7 +56,7 @@ public class PlayerController : MonoBehaviourPunCallbacks
     {
         if (_moveDirection == Vector2.zero) return;
 
-        transform.Translate(_moveDirection * moveSpeed * Time.deltaTime);
+        transform.Translate(_moveDirection * _moveSpeed * Time.deltaTime);
 
         Vector3 currentScale = transform.localScale;
 

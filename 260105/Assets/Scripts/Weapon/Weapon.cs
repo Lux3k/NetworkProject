@@ -2,21 +2,21 @@ using UnityEngine;
 
 public class Weapon : MonoBehaviour
 {
-    [SerializeField] private int weaponID;
-    [SerializeField] private Transform firePoint;
-    private BulletShooter shooter;
+    [SerializeField] private int _weaponID;
+    [SerializeField] private Transform _firePoint;
+    private BulletShooter _shooter;
 
     private WeaponData _data;
     private float _attackTimer;
 
-    public int WeaponID => weaponID;
+    public int WeaponID => _weaponID;
     public string WeaponName => _data != null ? _data.name : "Unknown";
     public bool CanFire => _attackTimer <= 0f;
 
     void Start()
     {
-        _data = DataManager.Instance.GetWeapon(weaponID);
-        shooter = GetComponentInParent<BulletShooter>();
+        _data = DataManager.Instance.GetWeapon(_weaponID);
+        _shooter = GetComponentInParent<BulletShooter>();
     }
 
     public void UpdateTimer()
@@ -29,9 +29,9 @@ public class Weapon : MonoBehaviour
     {
         if (!CanFire || _data == null) return;
 
-        Vector2 pos = firePoint != null ? (Vector2)firePoint.position : (Vector2)transform.position;
+        Vector2 pos = _firePoint != null ? (Vector2)_firePoint.position : (Vector2)transform.position;
 
-        shooter.PlayPattern(_data.patternID, pos, dir, bulletType);
+        _shooter.PlayPattern(_data.patternID, pos, dir, bulletType);
 
         _attackTimer = 1f / _data.attackSpeed;
     }

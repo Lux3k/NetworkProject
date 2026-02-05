@@ -17,7 +17,7 @@ public class SceneLoader : SingletonBehaviour<SceneLoader>
     protected override void Init()
     {
         
-        base.isDestroyOnLoad = true;
+        base._isDestroyOnLoad = true;
 
         base.Init();
     }
