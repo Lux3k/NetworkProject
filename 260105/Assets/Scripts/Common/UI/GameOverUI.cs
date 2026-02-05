@@ -15,11 +15,11 @@ public class GameOverUIData : BaseUIData
 
 public class GameOverUI : BaseUI
 {
-    [SerializeField] private TextMeshProUGUI _scoreTxt;
-    [SerializeField] private TextMeshProUGUI _waveTxt;
-    [SerializeField] private Button _restartBtn;
-    [SerializeField] private Button _lobbyBtn;
-    [SerializeField] private Button _quitBtn;
+    [SerializeField] private TextMeshProUGUI _scoreText;
+    [SerializeField] private TextMeshProUGUI _waveText;
+    [SerializeField] private Button _restartButton;
+    [SerializeField] private Button _lobbyButton;
+    [SerializeField] private Button _quitButton;
 
     private Action _onRestart;
     private Action _onLobby;
@@ -30,40 +30,40 @@ public class GameOverUI : BaseUI
         base.SetInfo(uiData);
 
         var data = uiData as GameOverUIData;
-        if (_scoreTxt) _scoreTxt.text = $"Score: {data.Score}";
-        if (_waveTxt) _waveTxt.text = $"Wave: {data.Wave}";
+        if (_scoreText) _scoreText.text = $"Score: {data.Score}";
+        if (_waveText) _waveText.text = $"Wave: {data.Wave}";
 
         _onRestart = data.OnRestart;
         _onLobby = data.OnLobby;
         _onQuit = data.OnQuit;
-        if (_restartBtn != null)
+        if (_restartButton != null)
         {
             if (PhotonNetwork.IsMasterClient)
             {
-                _restartBtn.gameObject.SetActive(true); 
+                _restartButton.gameObject.SetActive(true); 
             }
             else
             {
-                _restartBtn.gameObject.SetActive(false); 
+                _restartButton.gameObject.SetActive(false); 
             }
         }
     }
 
-    public void OnClickRestartBtn()
+    public void OnClickRestartButton()
     {
         //AudioManager.Instance?.PlaySFX(SFX.ui_button_click);
         _onRestart?.Invoke();
         CloseUI();
     }
 
-    public void OnClickLobbyBtn()
+    public void OnClickLobbyButton()
     {
         //AudioManager.Instance?.PlaySFX(SFX.ui_button_click);
         _onLobby?.Invoke();
         CloseUI();
     }
 
-    public void OnClickQuitBtn()
+    public void OnClickQuitButton()
     {
         //AudioManager.Instance?.PlaySFX(SFX.ui_button_click);
         _onQuit?.Invoke();

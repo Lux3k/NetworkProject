@@ -148,7 +148,7 @@ public class BulletManager : MonoBehaviour
             return _groupPool.Pop();
         return new BulletGroup();
     }
-    //public Bullet GetBullet(Vector2 pos, Vector2 dir, BulletType bulletType,
+    //public Bullet GetBullet(Vector2 pos, Vector2 direction, BulletType bulletType,
     //                   Color bulletColor, int groupID, int ownerID,
     //                   BulletMoveStrategyBase initialStrategy)
     //{
@@ -163,7 +163,7 @@ public class BulletManager : MonoBehaviour
     //        bullet = Instantiate(_bulletPrefab);
     //    }
 
-    //    bullet.Initialize(pos, dir, bulletType, bulletColor, groupID, ownerID);
+    //    bullet.Initialize(pos, direction, bulletType, bulletColor, groupID, ownerID);
 
     //    if (initialStrategy != null)
     //    {
@@ -180,7 +180,7 @@ public class BulletManager : MonoBehaviour
     //    return bullet;
     //}
 
-    public Bullet GetBullet(Vector2 pos, Vector2 dir, BulletType bulletType,
+    public Bullet GetBullet(Vector2 pos, Vector2 direction, BulletType bulletType,
                         Color bulletColor, int groupID, int ownerID,
                         IBulletStrategy initialStrategy)
     {
@@ -191,7 +191,7 @@ public class BulletManager : MonoBehaviour
         else
             bullet = Instantiate(_bulletPrefab);
 
-        bullet.Initialize(pos, dir, bulletType, bulletColor, groupID, ownerID);
+        bullet.Initialize(pos, direction, bulletType, bulletColor, groupID, ownerID);
 
         if (initialStrategy != null)
             bullet.SetStrategy(initialStrategy);

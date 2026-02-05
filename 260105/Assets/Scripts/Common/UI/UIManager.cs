@@ -3,8 +3,8 @@ using UnityEngine;
 
 public class UIManager : SingletonBehaviour<UIManager>
 {
-    public Transform UICanvasTrs;
-    public Transform ClosedUITrs;
+    [SerializeField]private Transform UICanvasTransform;
+    [SerializeField] private Transform ClosedUITransform;
 	
     private BaseUI _frontUI;
     private Dictionary<System.Type, GameObject> _openUIPool = new Dictionary<System.Type, GameObject>();
@@ -57,8 +57,8 @@ public class UIManager : SingletonBehaviour<UIManager>
             return;
         }
 
-        var siblingIdx = UICanvasTrs.childCount;
-        ui.Init(UICanvasTrs);
+        var siblingIdx = UICanvasTransform.childCount;
+        ui.Init(UICanvasTransform);
         ui.transform.SetSiblingIndex(siblingIdx);
         ui.gameObject.SetActive(true);
         ui.SetInfo(uiData);
@@ -77,10 +77,10 @@ public class UIManager : SingletonBehaviour<UIManager>
         ui.gameObject.SetActive(false);
         _openUIPool.Remove(uiType);
         _closedUIPool[uiType] = ui.gameObject;
-        ui.transform.SetParent(ClosedUITrs);
+        ui.transform.SetParent(ClosedUITransform);
 
         _frontUI = null;
-        var lastChild = UICanvasTrs.GetChild(UICanvasTrs.childCount - 1);
+        var lastChild = UICanvasTransform.GetChild(UICanvasTransform.childCount - 1);
         if (lastChild)
         {
             _frontUI = lastChild.gameObject.GetComponent<BaseUI>();

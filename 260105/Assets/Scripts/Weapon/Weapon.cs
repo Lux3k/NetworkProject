@@ -25,13 +25,13 @@ public class Weapon : MonoBehaviour
             _attackTimer -= Time.deltaTime;
     }
 
-    public void Fire(Vector2 dir, BulletType bulletType)
+    public void Fire(Vector2 direction, BulletType bulletType)
     {
         if (!CanFire || _data == null) return;
 
         Vector2 pos = _firePoint != null ? (Vector2)_firePoint.position : (Vector2)transform.position;
 
-        _shooter.PlayPattern(_data.patternID, pos, dir, bulletType);
+        _shooter.PlayPattern(_data.patternID, pos, direction, bulletType);
 
         _attackTimer = 1f / _data.attackSpeed;
     }

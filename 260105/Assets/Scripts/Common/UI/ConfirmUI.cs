@@ -1,5 +1,6 @@
 using System;
 using TMPro;
+using UnityEngine;
 using UnityEngine.UI;
 
 public enum ConfirmType
@@ -11,26 +12,26 @@ public enum ConfirmType
 public class ConfirmUIData : BaseUIData
 {
     public ConfirmType ConfirmType;
-    public string TitleTxt;
-    public string DescTxt;
-    public string OKBtnTxt;
-    public Action OnClickOKBtn;
-    public string CancelBtnTxt;
-    public Action OnClickCancelBtn;
+    public string TitleText;
+    public string DescText;
+    public string OKButtonText;
+    public Action OnClickOKButton;
+    public string CancelButtonText;
+    public Action OnClickCancelButton;
 }
 
 public class ConfirmUI : BaseUI
 {
-    public TextMeshProUGUI TitleTxt = null;
-    public TextMeshProUGUI DescTxt = null;
-    public Button OKBtn = null;
-    public Button CancelBtn = null;
-    public TextMeshProUGUI OKBtnTxt = null;
-    public TextMeshProUGUI CancelBtnTxt = null;
+    [SerializeField] private TextMeshProUGUI TitleText = null;
+    [SerializeField] private TextMeshProUGUI DescText = null;
+    [SerializeField] private Button OKButton = null;
+    [SerializeField] private Button CancelButton = null;
+    [SerializeField] private TextMeshProUGUI OKButtonText = null;
+    [SerializeField] private TextMeshProUGUI CancelButtonText = null;
 
     private ConfirmUIData _confirmUIData = null;
-    private Action _onClickOKBtn = null;
-    private Action _onClickCancelBtn = null;
+    private Action _onClickOKButton = null;
+    private Action _onClickCancelButton = null;
 
     public override void SetInfo(BaseUIData uiData)
     {
@@ -38,26 +39,26 @@ public class ConfirmUI : BaseUI
 
         _confirmUIData = uiData as ConfirmUIData;
 
-        TitleTxt.text = _confirmUIData.TitleTxt;
-        DescTxt.text = _confirmUIData.DescTxt;
-        OKBtnTxt.text = _confirmUIData.OKBtnTxt;
-        _onClickOKBtn = _confirmUIData.OnClickOKBtn;
-        CancelBtnTxt.text = _confirmUIData.CancelBtnTxt;
-        _onClickCancelBtn = _confirmUIData.OnClickCancelBtn;
+        TitleText.text = _confirmUIData.TitleText;
+        DescText.text = _confirmUIData.DescText;
+        OKButtonText.text = _confirmUIData.OKButtonText;
+        _onClickOKButton = _confirmUIData.OnClickOKButton;
+        CancelButtonText.text = _confirmUIData.CancelButtonText;
+        _onClickCancelButton = _confirmUIData.OnClickCancelButton;
 
-        OKBtn.gameObject.SetActive(true);
-        CancelBtn.gameObject.SetActive(_confirmUIData.ConfirmType == ConfirmType.OK_CANCEL);
+        OKButton.gameObject.SetActive(true);
+        CancelButton.gameObject.SetActive(_confirmUIData.ConfirmType == ConfirmType.OK_CANCEL);
     }
 
-    public void OnClickOKBtn()
+    public void OnClickOKButton()
     {
-        _onClickOKBtn?.Invoke();
+        _onClickOKButton?.Invoke();
         CloseUI();
     }
 
-    public void OnClickCancelBtn()
+    public void OnClickCancelButton()
     {
-        _onClickCancelBtn?.Invoke();
+        _onClickCancelButton?.Invoke();
         CloseUI();
     }
 }

@@ -120,7 +120,7 @@ namespace TMPro.Examples
                     Vector3 cross = Vector3.Cross(horizontal, tangent);
                     float angle = cross.z > 0 ? dot : 360 - dot;
 
-                    matrix = Matrix4x4.TRS(new Vector3(0, y0, 0), Quaternion.Euler(0, 0, angle), Vector3.one);
+                    matrix = Matrix4x4.Transform(new Vector3(0, y0, 0), Quaternion.Euler(0, 0, angle), Vector3.one);
 
                     vertices[vertexIndex + 0] = matrix.MultiplyPoint3x4(vertices[vertexIndex + 0]);
                     vertices[vertexIndex + 1] = matrix.MultiplyPoint3x4(vertices[vertexIndex + 1]);

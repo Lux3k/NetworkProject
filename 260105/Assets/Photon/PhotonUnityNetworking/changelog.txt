@@ -70,19 +70,19 @@ Updated: Library and Realtime to 4.1.6.11. More details in the change logs.
 
 v2.39 (21. October 2021)
 Changed: PhotonTransformView interpolation of position and rotation. It's now framerate independent.
-Updated: Library to 4.1.6.10. More details in changes-library.txt.
+Updated: Library to 4.1.6.10. More details in changes-library.Text.
 
 v2.38 (12. October 2021)
-Updated: Library to 4.1.6.9. More details in changes-library.txt.
+Updated: Library to 4.1.6.9. More details in changes-library.Text.
 
 v2.37 (27. September 2021)
 Added: CustomType deserialization length checks.
 Added: PhotonNetwork.EnableCloseConnection which defaults to false. This is a breaking change: Only if you set this to true, CloseConnection will work anymore.
-Updated: Library to 4.1.6.7. More details in changes-library.txt.
+Updated: Library to 4.1.6.7. More details in changes-library.Text.
 
 v2.36 (20. September 2021)
-Updated: Realtime API. Check out changes-realtime.txt.
-Updated: Library to 4.1.6.6. More details in changes-library.txt.
+Updated: Realtime API. Check out changes-realtime.Text.
+Updated: Library to 4.1.6.6. More details in changes-library.Text.
 
 v2.35 (24. August 2021)
 Changed: CheckConnectSetupXboxOne() to allow AuthOnceWss and Datagram Encryption (GCM mode). It will set ExpectedProtocol and EncryptionMode silently. Datagram Encryption is only possible with a native plugin.
@@ -92,8 +92,8 @@ Changed: Interest Culling in UtilityScripts/Culling/.
     Changed: The scene view grid now displaces the various area-indexes for cells that overlap (root, node and leaf).
     Note: Overall, the algorithm to select cells is just a quick showcase. It should avoid unsubscribing groups one by one and also avoid subscribing nearby groups one by one (while moving only along one axis of the areas).
 Fixed: A potential NullReferenceException for OwnershipUpdate events. If the PhotonView is unknown, this gets logged now. This is caused most frequently by loading scenes (or initializing them) without pausing the incoming message queue (dispatch). If ownership changed for objects, the Master Client will let new players know this but that failed, if the joining client didn't know the objects yet.
-Updated: Realtime API. Check out changes-realtime.txt.
-Updated: Library to 4.1.6.5. More details in changes-library.txt.
+Updated: Realtime API. Check out changes-realtime.Text.
+Updated: Library to 4.1.6.5. More details in changes-library.Text.
 
 v2.34.1 (28. July 2021)
 Updated: PhotonNetwork.PunVersion to "2.34.1" now. The previous version accidentally used "2.33.3" still.
@@ -104,7 +104,7 @@ Changed: The PhotonView.Owner and .Controller for "room PhotonViews" will be cha
 Changed: PUN needs to exit play mode in Editor, if there is a recompilation (due to code change, etc) to prevent running into endless NullReferenceExceptions and a flood of other errors. As the connection can't be held up after recompile, this is no big step back. The log will include a hint why the client exited playmode.
 Changed: The PhotonNetwork constructor creates a NetworkingClient (in Editor) to avoid exceptions due to possible recompilation.
 Changed: PhotonNetwork.StaticReset was running as RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad) but will run earlier now, using AfterAssembliesLoaded.
-Updated: Library to 4.1.6.4. More details in changes-library.txt.
+Updated: Library to 4.1.6.4. More details in changes-library.Text.
 
 v2.33.3 (07. July 2021)
 Fixed: Skipping cleanup of PhotonViews if they never had a legit ViewID. This could result in a NullReferenceException (e.g. when exiting play mode).
@@ -115,7 +115,7 @@ Fixed: Assigning photonView.ViewID = 0 will remove the PhotonView from the list 
 Added: Namespaces for various classes that were not having any.
 
 v2.33.1 (24. June 2021)
-Updated: Library to 4.1.6.3. More details in changes-library.txt.
+Updated: Library to 4.1.6.3. More details in changes-library.Text.
 Note: This has no distinct value for PhotonNetwork.PunVersion and no separate release in the Asset Store (the previous release was on the same day).
 
 v2.33 (24. June 2021)
@@ -128,11 +128,11 @@ Changed: The enumeration CustomAuthenticationType was changed to fix naming inco
 Fixed: In Asteroids Demo, remote ships are not reacting to input when remote controller is inactive.
 Fixed: Potential KeyNotFound issue in the Asteroids Demo, PlayerOverviewPanel if remote players left or the object got destroyed.
 Added: PlayerDetailsController.OnDisable() override (used in cockpit) to unsubscribe from callbacks which are subscribed in OnEnable(). Both override the inherited implementation and call base.
-Updated: Library to 4.1.6.2 with several smaller adjustments. More details in changes-library.txt.
+Updated: Library to 4.1.6.2 with several smaller adjustments. More details in changes-library.Text.
 
 v2.32 (09. June 2021)
 Fixed: Editor scripts to not overwrite the PhotonServerSettings when upgrading projects or loading them without a library folder. While the Editor starts up, the settings may be blank but not null. As before, if the asset is not available, it gets created.
-Updated: Library to 4.1.6.1 with several smaller adjustments. More details in changes-library.txt.
+Updated: Library to 4.1.6.1 with several smaller adjustments. More details in changes-library.Text.
 
 v2.31 (19. May 2021)
 Fixed: RpcList updating. Assumptions about editor-callbacks order were incorrect and caused a variable to not be set as needed.
@@ -425,7 +425,7 @@ Fixed: SerializationProtocol selection for WebGL.
 Fixed: Missing IWebRpcCallback interface reference added to MonoBehaviourPunCallbacks.
 Added: PhotonNetwork.AllocateViewID(bool sceneObject), which can be used to just get a viewID that is then assigned manually.
 Updated: Improved wording for warning on missing photonViews during serialization.
-Changed: The library now has a changes-realtime.txt file instead of a release_history.txt. The plan is to separate library and Realtime API updates from those of PUN and other packages. Also check out changes-realtime.txt and changes-library.txt.
+Changed: The library now has a changes-realtime.Text file instead of a release_history.Text. The plan is to separate library and Realtime API updates from those of PUN and other packages. Also check out changes-realtime.Text and changes-library.Text.
 Updated: PUN Cockpit. It will now rejoin instead of join if needed.
 Updated: To new library version 4.1.2.16.
     This fixes an issue with a ThreadAbortException thrown on Android (with specific Unity build settings) and improves connection stability in cases where the ping goes up temporarily.
@@ -544,7 +544,7 @@ v2.4 (24th October 2018)
 Fixed: Duplicated Instantiation Events when using PhotonNetwork.ReconnectAndRejoin: when a client rejoins a room, his server-side cached Instantiation Events get duplicated, resulting in duplicated objects. This has been fixed.
 Changed: When Unity exports with Runtime 4.x and Mono, PUN and Chat now use a new, async socket class to work around issues with Socket.Receive blocking indefinitely (and timing out). This is now available for UDP and TCP. IL2CPP is not using this.
 Note: We changed the "productname" internally from PhotonUnityNetworking to PUN2, to avoid a problem when building UWP apps with the AssemblyDefinitions in place. In that case, two .dbg files were created and put into the generated solution. This does not affect projects which import PUN (without the ProjectSettings file) but you should keep this in mind.
-Updated: The Photon3Unity3d.dll to v4.1.2.4 with some fixes and improvements. See release_history.txt.
+Updated: The Photon3Unity3d.dll to v4.1.2.4 with some fixes and improvements. See release_history.Text.
 
 v2.3.1 (17th October 2018)
 Updated: The Photon3Unity3d.dll to v4.1.2.3 for fix one issue with duplicates of fragmented messages. This could cause an exception and disconnect.
@@ -560,8 +560,8 @@ Changed: Enum DisconnectCause. Replace TimeoutDisconnect with ClientTimeout. Rep
 Added: Enum DisconnectCause.DisconnectByServerReasonUnknown for the case it's neither a ccu-limit, timeout nor a disconnect by the room's logic.
 Changed: Warning-dialog "AppId not set" is not shown, if the configuration points to a Master Server (Photon OnPremise). When the new server SDK expects an AppId, too, this could be reverted.
 Updated: Cockpit demo scene to expose automaticallySyncLevel and load level form. Updated links to docs.
-Updated: The readme.txt.
-Updated: The Photon3Unity3d.dll to v4.1.2.2, which has a few changes. See release_history.txt.
+Updated: The readme.Text.
+Updated: The Photon3Unity3d.dll to v4.1.2.2, which has a few changes. See release_history.Text.
 
 v2.2  (27th September 2018)
 Added: Assembly Definitions for Unity 2017.3 and up. PUN, Realtime, Chat, the WebSocket folder and some Editor classes are now assemblies and will recompile less frequently.

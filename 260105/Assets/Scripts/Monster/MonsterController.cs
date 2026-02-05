@@ -8,7 +8,7 @@ public class MonsterController : MonoBehaviour, IDamagable
     private MonsterData _data;
     private float _currentHP;
     private BulletShooter _shooter;
-    private Rigidbody2D _rb;
+    private Rigidbody2D _rigidBody;
     private Transform _target;
 
     private IMonsterCombatNetwork _network;
@@ -20,7 +20,7 @@ public class MonsterController : MonoBehaviour, IDamagable
     private void Awake()
     {
         _shooter = GetComponent<BulletShooter>();
-        _rb = GetComponent<Rigidbody2D>();
+        _rigidBody = GetComponent<Rigidbody2D>();
     }
 
     public void Initialize(int monsterID, int uniqueID, IMonsterCombatNetwork network)
@@ -49,13 +49,13 @@ public class MonsterController : MonoBehaviour, IDamagable
         _target = null;
 
         GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
-        float minDist = float.MaxValue;
+        float minDistance = float.MaxValue;
         foreach (var p in players)
         {
-            float dist = Vector2.Distance(transform.position, p.transform.position);
-            if (dist < minDist)
+            float distance = Vector2.Distance(transform.position, p.transform.position);
+            if (distance < minDistance)
             {
-                minDist = dist;
+                minDistance = distance;
                 _target = p.transform;
             }
         }
@@ -65,11 +65,11 @@ public class MonsterController : MonoBehaviour, IDamagable
     {
         if (_target == null || _data == null) return;
 
-        Vector2 dir = ((Vector2)_target.position - _rb.position).normalized;
-        _rb.MovePosition(_rb.position + dir * _data.moveSpeed * Time.fixedDeltaTime);
+        Vector2 direction = ((Vector2)_target.position - _rigidBody.position).normalized;
+        _rigidBody.MovePosition(_rigidBody.position + direction * _data.moveSpeed * Time.fixedDeltaTime);
 
-        if (dir.x != 0)
-            transform.localScale = new Vector3(dir.x < 0 ? 1 : -1, 1, 1);
+        if (direction.x != 0)
+            transform.localScale = new Vector3(direction.x < 0 ? 1 : -1, 1, 1);
     }
 
     private IEnumerator AttackRoutine()
@@ -87,8 +87,8 @@ public class MonsterController : MonoBehaviour, IDamagable
     }
     public void ExecuteAttack(int patternID, Vector2 targetPos)
     {
-        Vector2 dir = (targetPos - (Vector2)transform.position).normalized;
-        _shooter.PlayPatternLocal(patternID, transform.position, dir, BulletType.EnemyBullet);
+        Vector2 direction = (targetPos - (Vector2)transform.position).normalized;
+        _shooter.PlayPatternLocal(patternID, transform.position, direction, BulletType.EnemyBullet);
     }
     public void TakeDamage(int damage)
     {

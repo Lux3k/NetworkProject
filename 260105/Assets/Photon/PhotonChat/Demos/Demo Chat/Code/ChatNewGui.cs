@@ -473,23 +473,23 @@ namespace Photon.Chat.DemoChat
                 return;
             }
 
-            Toggle cbtn = (Toggle)GameObject.Instantiate(this.ChannelToggleToInstantiate);
-            cbtn.gameObject.SetActive(true);
-            cbtn.GetComponentInChildren<ChannelSelector>().SetChannel(channelName);
-            cbtn.transform.SetParent(this.ChannelToggleToInstantiate.transform.parent, false);
+            Toggle cButton = (Toggle)GameObject.Instantiate(this.ChannelToggleToInstantiate);
+            cButton.gameObject.SetActive(true);
+            cButton.GetComponentInChildren<ChannelSelector>().SetChannel(channelName);
+            cButton.transform.SetParent(this.ChannelToggleToInstantiate.transform.parent, false);
 
-            this.channelToggles.Add(channelName, cbtn);
+            this.channelToggles.Add(channelName, cButton);
         }
 
         private void InstantiateFriendButton(string friendId)
         {
-            GameObject fbtn = (GameObject)GameObject.Instantiate(this.FriendListUiItemtoInstantiate);
-            fbtn.gameObject.SetActive(true);
-            FriendItem _friendItem = fbtn.GetComponent<FriendItem>();
+            GameObject fButton = (GameObject)GameObject.Instantiate(this.FriendListUiItemtoInstantiate);
+            fButton.gameObject.SetActive(true);
+            FriendItem _friendItem = fButton.GetComponent<FriendItem>();
 
             _friendItem.FriendId = friendId;
 
-            fbtn.transform.SetParent(this.FriendListUiItemtoInstantiate.transform.parent, false);
+            fButton.transform.SetParent(this.FriendListUiItemtoInstantiate.transform.parent, false);
 
             this.friendListItemLUT[friendId] = _friendItem;
         }

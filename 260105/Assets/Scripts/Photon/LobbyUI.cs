@@ -9,11 +9,11 @@ public class LobbyUI : MonoBehaviourPunCallbacks
 {
 
     
-    [SerializeField] TMP_InputField _createRoomInput;
-    [SerializeField] TMP_InputField _joinRoomInput;
+    [SerializeField] private TMP_InputField _createRoomInput;
+    [SerializeField] private TMP_InputField _joinRoomInput;
 
-    [SerializeField] GameObject _roomPrefab;
-    [SerializeField] Transform _roomListPanel;
+    [SerializeField] private GameObject _roomPrefab;
+    [SerializeField] private Transform _roomListPanel;
 
     private void Start()
     {

@@ -33,7 +33,7 @@ public class Bullet : MonoBehaviour
         _radius = _spriteRenderer.bounds.extents.x;
     }
 
-    public void Initialize(Vector2 pos, Vector2 dir, BulletType bulletType,
+    public void Initialize(Vector2 pos, Vector2 direction, BulletType bulletType,
                           Color bulletColor, int groupID, int ownerID)
     {
         if (bulletType == BulletType.PlayerBullet)

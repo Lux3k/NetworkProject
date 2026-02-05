@@ -22,9 +22,9 @@ public class WeaponHolder : MonoBehaviour
             SwitchWeapon(_currentIndex - 1);
     }
 
-    public void Fire(Vector2 dir, BulletType bulletType)
+    public void Fire(Vector2 direction, BulletType bulletType)
     {
-        CurrentWeapon?.Fire(dir, bulletType);
+        CurrentWeapon?.Fire(direction, bulletType);
     }
 
     private void SwitchWeapon(int newIndex)

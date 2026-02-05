@@ -7,37 +7,37 @@ public class BulletShooter : MonoBehaviourPunCallbacks
     [Header("테스트용 SO")]
     [SerializeField] private BulletPatternSO testPattern;
 
-    public void PlayPattern(int patternID, Vector2 pos, Vector2 dir, BulletType bulletType)
+    public void PlayPattern(int patternID, Vector2 pos, Vector2 direction, BulletType bulletType)
     {
         if (photonView != null && photonView.IsMine)
             photonView.RPC("ExecutePattern", RpcTarget.All,
-                patternID, pos, dir, (int)bulletType);
+                patternID, pos, direction, (int)bulletType);
     }
-    public void PlayPatternLocal(int patternID, Vector2 pos, Vector2 dir, BulletType bulletType)
+    public void PlayPatternLocal(int patternID, Vector2 pos, Vector2 direction, BulletType bulletType)
     {
-        ExecutePattern(patternID, pos, dir, (int)bulletType);
+        ExecutePattern(patternID, pos, direction, (int)bulletType);
     }
 
     [PunRPC]
-    private void ExecutePattern(int patternID, Vector2 pos, Vector2 dir, int bulletTypeInt)
+    private void ExecutePattern(int patternID, Vector2 pos, Vector2 direction, int bulletTypeInt)
     {
         BulletType bulletType = (BulletType)bulletTypeInt;
 
         if (testPattern != null && testPattern.patternID == patternID)
         {
-            StartCoroutine(PatternRoutine(testPattern, pos, dir, bulletType, PhotonNetwork.LocalPlayer.ActorNumber));
+            StartCoroutine(PatternRoutine(testPattern, pos, direction, bulletType, PhotonNetwork.LocalPlayer.ActorNumber));
             return;
         }
 
         PatternData csvPattern = DataManager.Instance.GetPattern(patternID);
         if (csvPattern != null)
         {
-            StartCoroutine(PatternRoutine(csvPattern, pos, dir, bulletType, PhotonNetwork.LocalPlayer.ActorNumber));
+            StartCoroutine(PatternRoutine(csvPattern, pos, direction, bulletType, PhotonNetwork.LocalPlayer.ActorNumber));
             return;
         }
     }
 
-    private IEnumerator PatternRoutine(PatternData pattern, Vector2 pos, Vector2 dir,
+    private IEnumerator PatternRoutine(PatternData pattern, Vector2 pos, Vector2 direction,
                                   BulletType bulletType, int ownerID)
     {
         float currentDuration = 0f;
@@ -47,7 +47,7 @@ public class BulletShooter : MonoBehaviourPunCallbacks
         {
             // 매 발사마다 그룹 생성
             int groupID = GameManager.Instance.BulletManager.CreateGroup(pattern);
-            SpawnBullet(pattern, groupID, currentSpinAngle, dir, bulletType, ownerID);
+            SpawnBullet(pattern, groupID, currentSpinAngle, direction, bulletType, ownerID);
 
             yield return new WaitForSeconds(pattern.fireInterval);
             currentDuration += pattern.fireInterval;
@@ -55,7 +55,7 @@ public class BulletShooter : MonoBehaviourPunCallbacks
         }
     }
     private void SpawnBullet(PatternData pattern, int groupID, float spinAngle,
-                            Vector2 baseDir, BulletType bulletType, int ownerID)
+                            Vector2 basedirection, BulletType bulletType, int ownerID)
     {
         float baseAngle = Mathf.Atan2(baseDir.y, baseDir.x) * Mathf.Rad2Deg;
         float startAngle = baseAngle - (pattern.angleRange / 2f) + spinAngle;
@@ -79,12 +79,12 @@ public class BulletShooter : MonoBehaviourPunCallbacks
             Vector2 dir = DegreeToVector2(currentAngle);
 
             GameManager.Instance.BulletManager.GetBullet(
-                transform.position, dir, bulletType,
+                transform.position, direction, bulletType,
                 pattern.bulletColor, groupID, ownerID,initialStrategy);
         }
     }
 
-    private IEnumerator PatternRoutine(BulletPatternSO pattern, Vector2 pos, Vector2 dir,
+    private IEnumerator PatternRoutine(BulletPatternSO pattern, Vector2 pos, Vector2 direction,
                                     BulletType bulletType, int ownerID)
     {
         float currentDuration = 0f;
@@ -93,7 +93,7 @@ public class BulletShooter : MonoBehaviourPunCallbacks
         while (currentDuration < pattern.duration)
         {
             int groupID = GameManager.Instance.BulletManager.CreateGroup(pattern);
-            SpawnBullet(pattern, groupID, currentSpinAngle, dir, bulletType, ownerID);
+            SpawnBullet(pattern, groupID, currentSpinAngle, direction, bulletType, ownerID);
 
             yield return new WaitForSeconds(pattern.fireInterval);
             currentDuration += pattern.fireInterval;
@@ -101,7 +101,7 @@ public class BulletShooter : MonoBehaviourPunCallbacks
         }
     }
     private void SpawnBullet(BulletPatternSO pattern, int groupID, float spinAngle,
-                        Vector2 baseDir, BulletType bulletType, int ownerID)
+                        Vector2 basedirection, BulletType bulletType, int ownerID)
     {
         float baseAngle = Mathf.Atan2(baseDir.y, baseDir.x) * Mathf.Rad2Deg;
         float startAngle = baseAngle - (pattern.angleRange / 2f) + spinAngle;
@@ -127,7 +127,7 @@ public class BulletShooter : MonoBehaviourPunCallbacks
             
             GameManager.Instance.BulletManager.GetBullet(
                 transform.position,
-                dir,
+                direction,
                 bulletType,
                 pattern.bulletColor,  
                 groupID,

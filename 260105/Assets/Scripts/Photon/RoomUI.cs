@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class RoomUI : MonoBehaviour
 {
-    [SerializeField] Button _startBtn;
+    [SerializeField] private Button _startButton;
 
     void Start()
     {
@@ -16,7 +16,7 @@ public class RoomUI : MonoBehaviour
             Logger.Log("방 안의 사람들 목록: " + p.NickName);
         }
 
-        _startBtn.interactable = PhotonNetwork.IsMasterClient;
+        _startButton.interactable = PhotonNetwork.IsMasterClient;
     }
 
     void OnEnable()
@@ -33,7 +33,7 @@ public class RoomUI : MonoBehaviour
 
     void UpdateUI()
     {
-        _startBtn.interactable = PhotonNetwork.IsMasterClient;
+        _startButton.interactable = PhotonNetwork.IsMasterClient;
     }
 
     public void OnStartClick()

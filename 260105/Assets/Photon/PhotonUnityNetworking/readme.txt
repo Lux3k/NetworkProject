@@ -49,13 +49,13 @@ Server
 
 PUN+ Subscriptions
     Follow these steps when you bought an asset that includes a Photon Cloud subscription:
-        • Sign in and open the Dashboard.                       https://dashboard.photonengine.com
+        ?Sign in and open the Dashboard.                       https://dashboard.photonengine.com
           Use an existing Photon Cloud Account or register.
-        • Select the Application/Subscription to upgrade and click "Add Coupon / PUN+".
-        • Enter your Unity Invoice Number.
+        ?Select the Application/Subscription to upgrade and click "Add Coupon / PUN+".
+        ?Enter your Unity Invoice Number.
 
-        • Find the App ID on: https://dashboard.photonengine.com
-        • Find your Unity Invoice Number in the Unity AssetStore:
+        ?Find the App ID on: https://dashboard.photonengine.com
+        ?Find your Unity Invoice Number in the Unity AssetStore:
             https://www.assetstore.unity3d.com/en/#!/account/transactions
             Or while logged in to the Asset Store, click on your name on the top right.
             From the drop-down select the payment method you used in your purchase.
@@ -66,7 +66,7 @@ Important Files
 
     Documentation
         PhotonNetwork-Documentation.chm (a pdf is also included)
-        changelog.txt
+        changelog.Text
 
     The server-setup will be saved as file (can be moved into any Resources folder and edited in inspector)
         Photon\PhotonUnityNetworking\Resources\PhotonServerSettings.asset

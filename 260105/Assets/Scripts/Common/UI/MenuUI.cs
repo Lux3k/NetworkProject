@@ -11,10 +11,10 @@
 
     public class MenuUI : BaseUI
     {
-        [SerializeField] private Button _resumeBtn;
-        [SerializeField] private Button _settingsBtn;
-        [SerializeField] private Button _lobbyBtn;
-        [SerializeField] private Button _quitBtn;
+        [SerializeField] private Button _resumeButton;
+        [SerializeField] private Button _settingsButton;
+        [SerializeField] private Button _lobbyButton;
+        [SerializeField] private Button _quitButton;
 
         private Action _onResume;
         private Action _onLobby;
@@ -30,27 +30,27 @@
             _onQuit = data.OnQuit;
         }
 
-        public void OnClickResumeBtn()
+        public void OnClickResumeButton()
         {
             //AudioManager.Instance?.PlaySFX(SFX.ui_button_click);
             _onResume?.Invoke();
             CloseUI();
         }
 
-        public void OnClickSettingsBtn()
+        public void OnClickSettingsButton()
         {
             //AudioManager.Instance?.PlaySFX(SFX.ui_button_click);
             UIManager.Instance.OpenUI<SettingsUI>(new SettingsUIData());
         }
 
-        public void OnClickLobbyBtn()
+        public void OnClickLobbyButton()
         {
             //AudioManager.Instance?.PlaySFX(SFX.ui_button_click);
             _onLobby?.Invoke();
             CloseUI();
         }
 
-        public void OnClickQuitBtn()
+        public void OnClickQuitButton()
         {
             //AudioManager.Instance?.PlaySFX(SFX.ui_button_click);
             _onQuit?.Invoke();

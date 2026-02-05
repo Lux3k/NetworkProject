@@ -265,10 +265,10 @@ public class DataManager : SingletonBehaviour<DataManager>
                 keepSpawn = cols[6].Trim().ToLower() == "true"
             };
 
-            var monsterIDStrs = cols[1].Trim().Split('|');
-            wave.monsterIDs = new int[monsterIDStrs.Length];
-            for (int j = 0; j < monsterIDStrs.Length; j++)
-                wave.monsterIDs[j] = int.Parse(monsterIDStrs[j].Trim());
+            var monsterIDSTransform = cols[1].Trim().Split('|');
+            wave.monsterIDs = new int[monsterIDSTransform.Length];
+            for (int j = 0; j < monsterIDSTransform.Length; j++)
+                wave.monsterIDs[j] = int.Parse(monsterIDSTransform[j].Trim());
 
             _waves[wave.waveID] = wave;
         }
@@ -293,10 +293,10 @@ public class DataManager : SingletonBehaviour<DataManager>
                 stageName = cols[1].Trim()
             };
 
-            var waveIDStrs = cols[2].Trim().Split('|');
-            stage.waveIDs = new int[waveIDStrs.Length];
-            for (int j = 0; j < waveIDStrs.Length; j++)
-                stage.waveIDs[j] = int.Parse(waveIDStrs[j].Trim());
+            var waveIDSTransform = cols[2].Trim().Split('|');
+            stage.waveIDs = new int[waveIDSTransform.Length];
+            for (int j = 0; j < waveIDSTransform.Length; j++)
+                stage.waveIDs[j] = int.Parse(waveIDSTransform[j].Trim());
 
             _stages[stage.stageID] = stage;
         }

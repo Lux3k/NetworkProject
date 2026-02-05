@@ -262,7 +262,7 @@ SubShader {
             faceColor.rgb *= 1 - (dot(n, light) * _Diffuse);
             faceColor.rgb *= lerp(_Ambient, 1, n.z * n.z);
 
-            fixed4 reflcol = texCUBE(_Cube, reflect(input.viewDir, -n));
+            fixed4 reflcol = texCUBE(_Cube, reflect(input.viewdirection, -n));
             faceColor.rgb += reflcol.rgb * lerp(_ReflectFaceColor.rgb, _ReflectOutlineColor.rgb, saturate(sd + outline * 0.5)) * faceColor.a;
         #endif
 

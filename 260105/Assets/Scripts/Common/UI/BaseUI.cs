@@ -11,7 +11,7 @@ public class BaseUIData
 
 public class BaseUI : MonoBehaviour
 {
-    public Animation UIOpenAnim;
+    [SerializeField]private Animation UIOpenAnim;
     
     private Action _onShow;
     private Action _onClose;

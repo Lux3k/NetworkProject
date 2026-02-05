@@ -110,7 +110,7 @@ namespace TMPro.Examples
                     Vector2 charMidBasline = (vertices[vertexIndex + 0] + vertices[vertexIndex + 2]) / 2;
 
                     // Need to translate all 4 vertices of the character to aligned with middle of character / baseline.
-                    // This is needed so the matrix TRS is applied at the origin for each character.
+                    // This is needed so the matrix Transform is applied at the origin for each character.
                     Vector3 offset = charMidBasline;
 
                     // Translate the character to the middle baseline.
@@ -122,7 +122,7 @@ namespace TMPro.Examples
                     float zoomFactor = 1.5f;
 
                     // Setup the Matrix for the scale change.
-                    m_matrix = Matrix4x4.TRS(Vector3.zero, Quaternion.identity, Vector3.one * zoomFactor);
+                    m_matrix = Matrix4x4.Transform(Vector3.zero, Quaternion.identity, Vector3.one * zoomFactor);
 
                     // Apply Matrix operation on the given character.
                     vertices[vertexIndex + 0] = m_matrix.MultiplyPoint3x4(vertices[vertexIndex + 0]);
