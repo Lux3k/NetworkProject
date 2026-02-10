@@ -104,9 +104,3 @@ public class StageManager : MonoBehaviourPunCallbacks, IStageNetwork
         }
     }
 }
-
-    public interface IStageNetwork
-{
-    void RequestStartStage(int stageID);
-    void RequestNextStage();
-}

@@ -42,7 +42,7 @@ public class Bullet : MonoBehaviour
             _targetLayer = LayerMask.GetMask("Player");
 
         BulletTransform.position = pos;
-        Direction = dir.normalized;
+        Direction = direction.normalized;
 
         float angle = Mathf.Atan2(Direction.y, Direction.x) * Mathf.Rad2Deg;
         BulletTransform.rotation = Quaternion.Euler(0, 0, angle);

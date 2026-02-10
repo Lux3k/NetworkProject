@@ -55,9 +55,9 @@ public class BulletShooter : MonoBehaviourPunCallbacks
         }
     }
     private void SpawnBullet(PatternData pattern, int groupID, float spinAngle,
-                            Vector2 basedirection, BulletType bulletType, int ownerID)
+                            Vector2 baseDirection, BulletType bulletType, int ownerID)
     {
-        float baseAngle = Mathf.Atan2(baseDir.y, baseDir.x) * Mathf.Rad2Deg;
+        float baseAngle = Mathf.Atan2(baseDirection.y, baseDirection.x) * Mathf.Rad2Deg;
         float startAngle = baseAngle - (pattern.angleRange / 2f) + spinAngle;
 
         float angleStep = pattern.bulletCount > 1
@@ -76,7 +76,7 @@ public class BulletShooter : MonoBehaviourPunCallbacks
         for (int i = 0; i < pattern.bulletCount; i++)
         {
             float currentAngle = startAngle + (angleStep * i);
-            Vector2 dir = DegreeToVector2(currentAngle);
+            Vector2 direction = DegreeToVector2(currentAngle);
 
             GameManager.Instance.BulletManager.GetBullet(
                 transform.position, direction, bulletType,
@@ -101,9 +101,9 @@ public class BulletShooter : MonoBehaviourPunCallbacks
         }
     }
     private void SpawnBullet(BulletPatternSO pattern, int groupID, float spinAngle,
-                        Vector2 basedirection, BulletType bulletType, int ownerID)
+                        Vector2 baseDirection, BulletType bulletType, int ownerID)
     {
-        float baseAngle = Mathf.Atan2(baseDir.y, baseDir.x) * Mathf.Rad2Deg;
+        float baseAngle = Mathf.Atan2(baseDirection.y, baseDirection.x) * Mathf.Rad2Deg;
         float startAngle = baseAngle - (pattern.angleRange / 2f) + spinAngle;
 
         float angleStep = pattern.bulletCount > 1
@@ -122,7 +122,7 @@ public class BulletShooter : MonoBehaviourPunCallbacks
         for (int i = 0; i < pattern.bulletCount; i++)
         {
             float currentAngle = startAngle + (angleStep * i);
-            Vector2 dir = DegreeToVector2(currentAngle);
+            Vector2 direction = DegreeToVector2(currentAngle);
 
             
             GameManager.Instance.BulletManager.GetBullet(

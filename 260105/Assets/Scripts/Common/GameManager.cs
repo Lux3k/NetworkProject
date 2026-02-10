@@ -5,9 +5,8 @@ using UnityEngine;
 
 public enum GameState { Playing, GameOver, StageClear }
 
-public class GameManager : MonoBehaviourPunCallbacks
+public class GameManager : SingletonPunBehaviour<GameManager>
 {
-    public static GameManager Instance;
 
     [SerializeField] private GameObject _playerPrefab;
     [SerializeField] private BulletManager _bulletManager;
@@ -24,16 +23,16 @@ public class GameManager : MonoBehaviourPunCallbacks
 
     void Awake()
     {
-        if (Instance == null)
-            Instance = this;
-        else
-        {
-            Destroy(gameObject);
-            return;
-        }
 
         if (_bulletManager == null)
             _bulletManager = FindObjectOfType<BulletManager>();
+    }
+
+    protected override void Init()
+    {
+        base._isDestroyOnLoad = true;
+
+        base.Init();
     }
 
     void Start()
