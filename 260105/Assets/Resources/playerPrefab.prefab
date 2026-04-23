@@ -98,8 +98,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 28370f4e709fa6441af056376277d4ee, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  weaponID: 3
-  firePoint: {fileID: 4214920104558214038}
+  _weaponID: 2
+  _firePoint: {fileID: 4214920104558214038}
 --- !u!1 &2328065584070534395
 GameObject:
   m_ObjectHideFlags: 0
@@ -221,8 +221,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 93221ff3322d5e8429b8a0c26fa715de, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 5
-  playerHealth: {fileID: 0}
+  _moveSpeed: 10
+  _playerHealth: {fileID: 5761074415402787297}
   weaponHolder: {fileID: 6541205307829659877}
 --- !u!114 &7622759612454958347
 MonoBehaviour:
@@ -267,7 +267,7 @@ CapsuleCollider2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2328065584070534395}
-  m_Enabled: 1
+  m_Enabled: 0
   m_Density: 1
   m_Material: {fileID: 0}
   m_IncludeLayers:
@@ -334,7 +334,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7126b9f814c380442bbaada4fe1c3458, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  testPattern: {fileID: 0}
+  testPattern: {fileID: 11400000, guid: bfd46b6cfaeeccd44a8c3a10b1e063b4, type: 2}
 --- !u!114 &5761074415402787297
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -457,7 +457,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5a8e480f9683f8549a52b164ea98be82, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  weapons:
+  _weapons:
   - {fileID: 470785976357440002}
   - {fileID: 4575443680214406332}
   - {fileID: 7697918654610466820}
@@ -590,8 +590,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 28370f4e709fa6441af056376277d4ee, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  weaponID: 1
-  firePoint: {fileID: 1727773432407805172}
+  _weaponID: 0
+  _firePoint: {fileID: 1727773432407805172}
 --- !u!1 &8946738737553050443
 GameObject:
   m_ObjectHideFlags: 0
@@ -690,5 +690,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 28370f4e709fa6441af056376277d4ee, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  weaponID: 2
-  firePoint: {fileID: 5848797174338271109}
+  _weaponID: 1
+  _firePoint: {fileID: 5848797174338271109}

@@ -6,7 +6,8 @@ public class BulletManager : MonoBehaviour
 {
     [Header("Bullet Pool")]
     [SerializeField] private Bullet _bulletPrefab;
-    [SerializeField] private int _poolSize = 100;
+    [SerializeField] private int _poolSize = 4500;
+    [SerializeField] private int _maxActiveBullets = 4000;
 
     [Header("Pattern Database")]
     [SerializeField] private List<BulletPatternSO> _patternDatabase;
@@ -23,8 +24,9 @@ public class BulletManager : MonoBehaviour
     private Dictionary<int, BulletGroup> _groupDict = new Dictionary<int, BulletGroup>();
 
     // ∆–≈œ Dictionary
-    private Dictionary<int, BulletPatternSO> _patternDict; 
+    private Dictionary<int, BulletPatternSO> _patternDict;
 
+    public int ActiveBulletCount => _allActiveBullets.Count;
     private void Awake()
     {
         Initialize(); 
@@ -184,6 +186,9 @@ public class BulletManager : MonoBehaviour
                         Color bulletColor, int groupID, int ownerID,
                         IBulletStrategy initialStrategy)
     {
+        if (_allActiveBullets.Count >= _maxActiveBullets)
+            return null;
+
         Bullet bullet;
 
         if (BulletPool.Count > 0)

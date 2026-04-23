@@ -21,20 +21,28 @@ public class BulletShooter : MonoBehaviourPunCallbacks
     [PunRPC]
     private void ExecutePattern(int patternID, Vector2 pos, Vector2 direction, int bulletTypeInt)
     {
+        Debug.Log($"[Shooter] ExecutePattern patternID={patternID}, DataManager.IsLoaded={DataManager.Instance.IsLoaded}");
+
         BulletType bulletType = (BulletType)bulletTypeInt;
 
         if (testPattern != null && testPattern.patternID == patternID)
         {
+            Debug.Log($"[Shooter] SO 패턴 사용");
             StartCoroutine(PatternRoutine(testPattern, pos, direction, bulletType, PhotonNetwork.LocalPlayer.ActorNumber));
             return;
         }
 
+
         PatternData csvPattern = DataManager.Instance.GetPattern(patternID);
+        Debug.Log($"[Shooter] csvPattern null? {csvPattern == null}, phases count={csvPattern?.phases?.Count ?? -1}");
+
         if (csvPattern != null)
         {
             StartCoroutine(PatternRoutine(csvPattern, pos, direction, bulletType, PhotonNetwork.LocalPlayer.ActorNumber));
             return;
         }
+
+        Debug.LogError($"[Shooter] 패턴 못 찾음! patternID={patternID}");
     }
 
     private IEnumerator PatternRoutine(PatternData pattern, Vector2 pos, Vector2 direction,

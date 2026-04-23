@@ -295,9 +295,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e7b28ba02ab12054c9e3e08c0ca7477f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  monsterPrefab: {fileID: 79815769631904044, guid: 0cb6bdbed0b0dd949b45d9bfbba20afc, type: 3}
-  poolSize: 50
-  spawnRadius: 15
+  _monsterPrefab: {fileID: 79815769631904044, guid: 0cb6bdbed0b0dd949b45d9bfbba20afc, type: 3}
+  _poolSize: 50
+  _spawnRadius: 15
 --- !u!114 &213749176
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -480,8 +480,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cc30af0a881964c419e2bf236ee18a0a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spawner: {fileID: 213749175}
-  startStageID: 1
+  _spawner: {fileID: 213749175}
+  _startStageID: 1
 --- !u!114 &782909320
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -534,9 +534,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5476ebe9cb88cca4db18ed40ab9fc92a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerPrefab: {fileID: 2328065584070534395, guid: a1b9973d3d9ef054da8fac64f90eff6d, type: 3}
-  bulletManager: {fileID: 1125583672}
-  stageManager: {fileID: 782909319}
+  _playerPrefab: {fileID: 2328065584070534395, guid: a1b9973d3d9ef054da8fac64f90eff6d, type: 3}
+  _bulletManager: {fileID: 1125583674}
+  _stageManager: {fileID: 782909319}
 --- !u!4 &1006871080
 Transform:
   m_ObjectHideFlags: 0
@@ -584,6 +584,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1125583673}
   - component: {fileID: 1125583672}
+  - component: {fileID: 1125583674}
   m_Layer: 0
   m_Name: BulletManager
   m_TagString: Untagged
@@ -603,11 +604,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 15016afdc663b554d96e963b10d07fcd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _bulletPrefab: {fileID: 5804810583464148442, guid: f0bb53c79c1eac849bd5d9a029a1a525, type: 3}
-  _poolSize: 100
-  patternDatabase:
-  - {fileID: 11400000, guid: bfd46b6cfaeeccd44a8c3a10b1e063b4, type: 2}
-  _allActiveBullets: []
 --- !u!4 &1125583673
 Transform:
   m_ObjectHideFlags: 0
@@ -623,6 +619,23 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1125583674
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1125583671}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e3f72d4e430d16049b0cb81c0b60f950, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _bulletPrefab: {fileID: 5804810583464148442, guid: f0bb53c79c1eac849bd5d9a029a1a525, type: 3}
+  _poolSize: 4000
+  _maxActiveBullets: 4000
+  _patternDatabase: []
+  _allActiveBullets: []
 --- !u!1 &1259259918
 GameObject:
   m_ObjectHideFlags: 0
@@ -727,8 +740,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8cf62bd961306b840ac67ba693ded24e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  UICanvasTrs: {fileID: 1346735007}
-  ClosedUITrs: {fileID: 760959660}
+  _uICanvasTransform: {fileID: 1346735007}
+  _closedUITransform: {fileID: 760959660}
 --- !u!114 &1346735004
 MonoBehaviour:
   m_ObjectHideFlags: 0

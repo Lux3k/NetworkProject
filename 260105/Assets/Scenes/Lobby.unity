@@ -1113,7 +1113,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0.00034471994}
+  m_AnchoredPosition: {x: 0, y: 0.00070547085}
   m_SizeDelta: {x: 0, y: 300}
   m_Pivot: {x: 0, y: 1}
 --- !u!1 &769033299
@@ -1416,7 +1416,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 524313065}
   m_Direction: 2
   m_Value: 0
-  m_Size: 1
+  m_Size: 0.99999154
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -1828,10 +1828,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9c0c82b0aa04c784da4523b6bbbed879, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  createRoomInput: {fileID: 1295531165}
-  joinRoomInput: {fileID: 120735143}
-  roomPrefab: {fileID: 6846731869585273862, guid: fe2ba6d3c6c80bf48bc6157fbabad703, type: 3}
-  roomListPanel: {fileID: 769033300}
+  _createRoomInput: {fileID: 1295531165}
+  _joinRoomInput: {fileID: 120735143}
+  _roomPrefab: {fileID: 6846731869585273862, guid: fe2ba6d3c6c80bf48bc6157fbabad703, type: 3}
+  _roomListPanel: {fileID: 769033300}
 --- !u!1 &1295531163
 GameObject:
   m_ObjectHideFlags: 0

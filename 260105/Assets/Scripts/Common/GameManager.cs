@@ -21,18 +21,14 @@ public class GameManager : SingletonPunBehaviour<GameManager>
     private int _totalWaves;
 
 
-    void Awake()
-    {
-
-        if (_bulletManager == null)
-            _bulletManager = FindObjectOfType<BulletManager>();
-    }
-
     protected override void Init()
     {
         base._isDestroyOnLoad = true;
 
         base.Init();
+
+        if (_bulletManager == null)
+            _bulletManager = FindObjectOfType<BulletManager>();
     }
 
     void Start()
